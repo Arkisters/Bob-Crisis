@@ -28,5 +28,8 @@ public class PlayerController : MonoBehaviour
         {
             transform.Translate(movement * walkSpeed * Time.deltaTime, Space.World);
         }
+        Vector3 pos = transform.position;
+        pos.z = 0;
+        transform.position = pos;
     }
 }
