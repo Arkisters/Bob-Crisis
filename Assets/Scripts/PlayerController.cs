@@ -119,6 +119,9 @@ public class PlayerController : MonoBehaviour
         {
             isCrouching = false;
         }
+        Vector3 pos = transform.position;
+        pos.z = 0;
+        transform.position = pos;
     }
     
     void HandleMovement()
