@@ -4,11 +4,8 @@ using UnityEngine.Events;
 public class InteractionTrigger : MonoBehaviour, IInteractable
 {
     [Header("Interaction Settings")]
-    public string interactionPrompt = "Press E to interact";
     public bool canBeReused = true;
-    
-    [Header("Events")]
-    public UnityEvent onInteract;
+    public GameObject targetObject;
     
     private bool hasBeenUsed = false;
 
@@ -17,14 +14,19 @@ public class InteractionTrigger : MonoBehaviour, IInteractable
     {
         if (hasBeenUsed && !canBeReused)
         {
-            Debug.Log($"{gameObject.name} has already been used.");
             return;
         }
         
         hasBeenUsed = true;
-        onInteract?.Invoke();
         
-        Debug.Log($"Player interacted with {gameObject.name}");
+        if (targetObject != null)
+        {
+            IInteractable interactable = targetObject.GetComponent<IInteractable>();
+            if (interactable != null)
+            {
+                interactable.Interact(player);
+            }
+        }
     }
 
 
