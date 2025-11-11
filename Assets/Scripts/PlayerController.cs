@@ -6,9 +6,10 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float walkSpeed = 4f;
     public float crouchSpeed = 2f;
+    public float carryingSpeedMultiplier = 0.7f; // Speed reduction when carrying objects
     public float jumpForce = 6f;
     public float airAcceleration = 50f;
-    public float fastFallForce = 5f;
+    public float fastFallForce = 25f;
 
     [Header("Ground Detection")]
     public Transform groundCheck;
@@ -18,8 +19,8 @@ public class PlayerController : MonoBehaviour
     [Header("Jump Settings")]
     public float coyoteTime = 0.15f;
     public float jumpBufferTime = 0.15f;
-    public float jumpHoldTime = 0.15f;
-    public float jumpHoldForce = 25f;
+    public float jumpHoldTime = 0.2f;
+    public float jumpHoldForce = 18f;
     
     [Header("Animation")]
     public Animator animator;
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private bool crouchHeld;
     private bool jumpHeld;
     private bool isFacingRight = true;
+    private InteractableEffects currentlyGrabbing;
     
     private const string ANIM_SPEED = "Speed";
     private const string ANIM_IS_JUMPING = "IsJumping";
@@ -154,6 +156,12 @@ public class PlayerController : MonoBehaviour
         {
             currentSpeed = walkSpeed;
         }
+        
+        // Reduce speed when carrying an object
+        if (currentlyGrabbing != null)
+        {
+            currentSpeed *= carryingSpeedMultiplier;
+        }
 
         if (isGrounded)
         {
@@ -201,12 +209,42 @@ public class PlayerController : MonoBehaviour
         
         foreach (Collider2D collider in hitColliders)
         {
+            // Check if the object is in the direction the player is facing
+            Vector3 directionToObject = (collider.transform.position - transform.position).normalized;
+            bool objectInFrontOfPlayer = (isFacingRight && directionToObject.x > 0) || (!isFacingRight && directionToObject.x < 0);
+            
+            if (!objectInFrontOfPlayer) continue;
+            
             IInteractable interactable = collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
                 interactable.Interact(this);
+                
+                // Track if we just grabbed something
+                InteractableEffects effects = collider.GetComponent<InteractableEffects>();
+                if (effects != null && effects.enableGrab)
+                {
+                    if (effects.IsBeingGrabbed())
+                    {
+                        currentlyGrabbing = effects;
+                    }
+                    else if (currentlyGrabbing == effects)
+                    {
+                        currentlyGrabbing = null;
+                    }
+                }
                 break;
             }
+        }
+    }
+
+
+    public void ReleaseGrabbedObject()
+    {
+        if (currentlyGrabbing != null)
+        {
+            currentlyGrabbing.StopGrab();
+            currentlyGrabbing = null;
         }
     }
 
@@ -243,6 +281,11 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             TryInteract();
+        }
+        else if (context.canceled)
+        {
+            // Release grabbed object when interaction button is released
+            ReleaseGrabbedObject();
         }
     }
 

@@ -25,11 +25,24 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     public bool enableActivation = false;
     public GameObject[] objectsToActivate;
     public GameObject[] objectsToDeactivate;
+    
+    [Header("Grab Effects")]
+    public bool enableGrab = false;
+    public float grabForce = 5f; // Force applied to pull box toward player
+    public float maxGrabDistance = 2f; // Maximum distance to maintain grab
+    private Transform originalParent;
+    private Vector3 originalLocalPosition;
+    private bool isBeingGrabbed = false;
+    private PlayerController grabbingPlayer;
+    private Rigidbody2D objectRigidbody;
+    private Collider2D objectCollider;
 
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        objectRigidbody = GetComponent<Rigidbody2D>();
+        objectCollider = GetComponent<Collider2D>();
         
         if (spriteRenderer != null)
         {
@@ -38,6 +51,19 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         
         originalPosition = transform.position;
         targetPosition = originalPosition + moveOffset;
+        
+        // Store original parent and local position for grab functionality
+        originalParent = transform.parent;
+        originalLocalPosition = transform.localPosition;
+        
+        // Warn if missing components for grab functionality
+        if (enableGrab)
+        {
+            if (objectRigidbody == null)
+                Debug.LogWarning($"InteractableEffects on {gameObject.name} has grab enabled but no Rigidbody2D component!");
+            if (objectCollider == null)
+                Debug.LogWarning($"InteractableEffects on {gameObject.name} has grab enabled but no Collider2D component!");
+        }
     }
 
 
@@ -52,6 +78,31 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             if (progress >= 1f)
             {
                 isMoving = false;
+            }
+        }
+        
+        // Handle grab with simple force toward player
+        if (isBeingGrabbed && grabbingPlayer != null && objectRigidbody != null)
+        {
+            Vector3 playerPosition = grabbingPlayer.transform.position;
+            Vector3 directionToPlayer = (playerPosition - transform.position);
+            float distanceToPlayer = directionToPlayer.magnitude;
+            
+            // Only apply force if not too close (to prevent jittering when touching)
+            if (distanceToPlayer > 0.5f)
+            {
+                Vector3 forceDirection = directionToPlayer.normalized;
+                objectRigidbody.AddForce(forceDirection * grabForce, ForceMode2D.Force);
+            }
+            
+            // Break grab if too far away
+            if (distanceToPlayer > maxGrabDistance)
+            {
+                StopGrab();
+                if (grabbingPlayer != null)
+                {
+                    grabbingPlayer.ReleaseGrabbedObject();
+                }
             }
         }
     }
@@ -166,11 +217,50 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     }
 
 
+    public void StartGrab(PlayerController player)
+    {
+        if (!enableGrab || isBeingGrabbed || objectRigidbody == null) return;
+        
+        isBeingGrabbed = true;
+        grabbingPlayer = player;
+        
+        // Store original parent and position
+        originalParent = transform.parent;
+        originalLocalPosition = transform.localPosition;
+    }
+
+
+    public void StopGrab()
+    {
+        if (!enableGrab || !isBeingGrabbed) return;
+        
+        isBeingGrabbed = false;
+        grabbingPlayer = null;
+    }
+
+
+    public bool IsBeingGrabbed()
+    {
+        return isBeingGrabbed;
+    }
+
+
     public void Interact(PlayerController player)
     {
         if (enableColorChange) ToggleColor();
         if (enableToggle) ToggleObject();
         if (enableMovement) ToggleMove();
         if (enableActivation) ActivateObjects();
+        if (enableGrab) 
+        {
+            if (isBeingGrabbed)
+            {
+                StopGrab();
+            }
+            else
+            {
+                StartGrab(player);
+            }
+        }
     }
 }

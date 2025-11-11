@@ -172,7 +172,7 @@ MonoBehaviour:
   crouchSpeed: 2
   jumpForce: 8
   airAcceleration: 50
-  fastFallForce: 5
+  fastFallForce: 15
   groundCheck: {fileID: 8117672520532539099}
   groundCheckRadius: 0.1
   groundLayer:
@@ -181,7 +181,7 @@ MonoBehaviour:
   coyoteTime: 0.15
   jumpBufferTime: 0.15
   jumpHoldTime: 0.2
-  jumpHoldForce: 15
+  jumpHoldForce: 25
   animator: {fileID: 0}
   walkSpritesLeft: []
   walkSpritesRight: []
@@ -190,7 +190,7 @@ MonoBehaviour:
   interactionRange: 0.75
   interactableLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 768
 --- !u!114 &1631940732457008358
 MonoBehaviour:
   m_ObjectHideFlags: 0
