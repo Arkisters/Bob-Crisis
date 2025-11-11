@@ -4,18 +4,22 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float walkSpeed = 5f;
+    public float walkSpeed = 4f;
     public float crouchSpeed = 2f;
-    public float jumpForce = 10f;
+    public float jumpForce = 6f;
+    public float airAcceleration = 50f;
+    public float fastFallForce = 5f;
 
     [Header("Ground Detection")]
     public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
+    public float groundCheckRadius = 0.1f;
     public LayerMask groundLayer;
 
     [Header("Jump Settings")]
     public float coyoteTime = 0.15f;
-    public float jumpBufferTime = 0.2f;
+    public float jumpBufferTime = 0.15f;
+    public float jumpHoldTime = 0.15f;
+    public float jumpHoldForce = 25f;
     
     [Header("Animation")]
     public Animator animator;
@@ -25,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public Sprite idleSpriteRight;
     
     [Header("Interaction")]
-    public float interactionRange = 1.5f;
+    public float interactionRange = 0.75f;
     public LayerMask interactableLayer;
     
     private Rigidbody2D rb;
@@ -34,8 +38,10 @@ public class PlayerController : MonoBehaviour
     private bool isCrouching;
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
+    private float jumpHoldCounter;
     private float horizontalInput;
     private bool crouchHeld;
+    private bool jumpHeld;
     private bool isFacingRight = true;
     
     private const string ANIM_SPEED = "Speed";
@@ -90,6 +96,12 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
         }
 
+        if (jumpHoldCounter > 0f && jumpHeld)
+        {
+            rb.AddForce(Vector2.up * jumpHoldForce, ForceMode2D.Force);
+            jumpHoldCounter -= Time.fixedDeltaTime;
+        }
+
         HandleCrouching();
         HandleMovement();
         UpdateSpriteDirection();
@@ -107,6 +119,7 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         coyoteTimeCounter = 0f;
+        jumpHoldCounter = jumpHoldTime;
     }
     
     void HandleCrouching()
@@ -119,6 +132,12 @@ public class PlayerController : MonoBehaviour
         {
             isCrouching = false;
         }
+        
+        if (crouchHeld)
+        {
+            rb.AddForce(Vector2.down * fastFallForce, ForceMode2D.Force);
+        }
+        
         Vector3 pos = transform.position;
         pos.z = 0;
         transform.position = pos;
@@ -136,7 +155,21 @@ public class PlayerController : MonoBehaviour
             currentSpeed = walkSpeed;
         }
 
-        rb.linearVelocity = new Vector2(horizontalInput * currentSpeed, rb.linearVelocity.y);
+        if (isGrounded)
+        {
+            rb.linearVelocity = new Vector2(horizontalInput * currentSpeed, rb.linearVelocity.y);
+        }
+        else
+        {
+            float moveForce = horizontalInput * airAcceleration;
+            rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
+            
+            float maxAirSpeed = currentSpeed;
+            if (Mathf.Abs(rb.linearVelocity.x) > maxAirSpeed)
+            {
+                rb.linearVelocity = new Vector2(Mathf.Sign(rb.linearVelocity.x) * maxAirSpeed, rb.linearVelocity.y);
+            }
+        }
     }
     
     void UpdateAnimations()
@@ -189,6 +222,12 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             jumpBufferCounter = jumpBufferTime;
+            jumpHeld = true;
+        }
+        
+        if (context.canceled)
+        {
+            jumpHeld = false;
         }
     }
 
