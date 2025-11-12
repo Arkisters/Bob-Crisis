@@ -205,35 +205,46 @@ public class PlayerController : MonoBehaviour
     
     void TryInteract()
     {
+        Debug.Log("[PLAYER] Interact button pressed");
+        
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, interactionRange, interactableLayer);
+        
+        Debug.Log($"[PLAYER] Found {hitColliders.Length} colliders in interaction range");
         
         foreach (Collider2D collider in hitColliders)
         {
-            // Check if the object is in the direction the player is facing
             Vector3 directionToObject = (collider.transform.position - transform.position).normalized;
             bool objectInFrontOfPlayer = (isFacingRight && directionToObject.x > 0) || (!isFacingRight && directionToObject.x < 0);
+            
+            Debug.Log($"[PLAYER] Checking {collider.gameObject.name} - In front: {objectInFrontOfPlayer}");
             
             if (!objectInFrontOfPlayer) continue;
             
             IInteractable interactable = collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
+                Debug.Log($"[PLAYER] Calling Interact() on {collider.gameObject.name}");
                 interactable.Interact(this);
                 
-                // Track if we just grabbed something
                 InteractableEffects effects = collider.GetComponent<InteractableEffects>();
-                if (effects != null && effects.enableGrab)
+                if (effects != null && effects.enableGrabbing)
                 {
                     if (effects.IsBeingGrabbed())
                     {
+                        Debug.Log($"[PLAYER] Now grabbing {collider.gameObject.name}");
                         currentlyGrabbing = effects;
                     }
                     else if (currentlyGrabbing == effects)
                     {
+                        Debug.Log($"[PLAYER] Released {collider.gameObject.name}");
                         currentlyGrabbing = null;
                     }
                 }
                 break;
+            }
+            else
+            {
+                Debug.LogWarning($"[PLAYER] {collider.gameObject.name} has no IInteractable component!");
             }
         }
     }
@@ -280,11 +291,12 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
+            Debug.Log("[INPUT] Interact button performed");
             TryInteract();
         }
         else if (context.canceled)
         {
-            // Release grabbed object when interaction button is released
+            Debug.Log("[INPUT] Interact button released");
             ReleaseGrabbedObject();
         }
     }

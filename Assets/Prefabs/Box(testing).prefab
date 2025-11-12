@@ -178,15 +178,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableColorChange: 0
   targetColor: {r: 0, g: 1, b: 0, a: 1}
-  enableToggle: 0
+  enableObjectToggle: 0
   objectToToggle: {fileID: 538190077781961504}
   enableMovement: 0
   moveOffset: {x: 0, y: 2, z: 0}
   moveDuration: 1
-  enableActivation: 0
+  enableObjectActivation: 0
   objectsToActivate: []
   objectsToDeactivate: []
-  enableGrab: 1
+  enableGrabbing: 1
   grabForce: 10
   maxGrabDistance: 5
 --- !u!114 &2905048676281476473

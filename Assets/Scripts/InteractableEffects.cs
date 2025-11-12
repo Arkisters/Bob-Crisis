@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class InteractableEffects : MonoBehaviour, IInteractable
 {
-    [Header("Color Effects")]
+    [Header("Color Change")]
     public bool enableColorChange = false;
     public Color targetColor = Color.green;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
     
-    [Header("Toggle Effects")]
-    public bool enableToggle = false;
+    [Header("Object Toggle")]
+    public bool enableObjectToggle = false;
     public GameObject objectToToggle;
     
-    [Header("Movement Effects")]
+    [Header("Object Movement")]
     public bool enableMovement = false;
     public Vector3 moveOffset = new Vector3(0, 2, 0);
     public float moveDuration = 1f;
@@ -21,15 +21,15 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     private bool isMoving = false;
     private float moveTimer = 0f;
     
-    [Header("Activation Effects")]
-    public bool enableActivation = false;
+    [Header("Object Activation")]
+    public bool enableObjectActivation = false;
     public GameObject[] objectsToActivate;
     public GameObject[] objectsToDeactivate;
     
-    [Header("Grab Effects")]
-    public bool enableGrab = false;
-    public float grabForce = 5f; // Force applied to pull box toward player
-    public float maxGrabDistance = 2f; // Maximum distance to maintain grab
+    [Header("Grab and Carry")]
+    public bool enableGrabbing = false;
+    public float grabForce = 5f;
+    public float maxGrabDistance = 2f;
     private Transform originalParent;
     private Vector3 originalLocalPosition;
     private bool isBeingGrabbed = false;
@@ -52,12 +52,10 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         originalPosition = transform.position;
         targetPosition = originalPosition + moveOffset;
         
-        // Store original parent and local position for grab functionality
         originalParent = transform.parent;
         originalLocalPosition = transform.localPosition;
         
-        // Warn if missing components for grab functionality
-        if (enableGrab)
+        if (enableGrabbing)
         {
             if (objectRigidbody == null)
                 Debug.LogWarning($"InteractableEffects on {gameObject.name} has grab enabled but no Rigidbody2D component!");
@@ -81,23 +79,21 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             }
         }
         
-        // Handle grab with simple force toward player
         if (isBeingGrabbed && grabbingPlayer != null && objectRigidbody != null)
         {
             Vector3 playerPosition = grabbingPlayer.transform.position;
             Vector3 directionToPlayer = (playerPosition - transform.position);
             float distanceToPlayer = directionToPlayer.magnitude;
             
-            // Only apply force if not too close (to prevent jittering when touching)
             if (distanceToPlayer > 0.5f)
             {
                 Vector3 forceDirection = directionToPlayer.normalized;
                 objectRigidbody.AddForce(forceDirection * grabForce, ForceMode2D.Force);
             }
             
-            // Break grab if too far away
             if (distanceToPlayer > maxGrabDistance)
             {
+                Debug.Log($"[GRAB] {gameObject.name} too far from player, releasing grab");
                 StopGrab();
                 if (grabbingPlayer != null)
                 {
@@ -139,21 +135,21 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     public void ToggleObject()
     {
-        if (!enableToggle || objectToToggle == null) return;
+        if (!enableObjectToggle || objectToToggle == null) return;
         objectToToggle.SetActive(!objectToToggle.activeSelf);
     }
 
 
     public void EnableObject()
     {
-        if (!enableToggle || objectToToggle == null) return;
+        if (!enableObjectToggle || objectToToggle == null) return;
         objectToToggle.SetActive(true);
     }
 
 
     public void DisableObject()
     {
-        if (!enableToggle || objectToToggle == null) return;
+        if (!enableObjectToggle || objectToToggle == null) return;
         objectToToggle.SetActive(false);
     }
 
@@ -197,7 +193,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     public void ActivateObjects()
     {
-        if (!enableActivation) return;
+        if (!enableObjectActivation) return;
         
         foreach (GameObject obj in objectsToActivate)
         {
@@ -219,12 +215,28 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     public void StartGrab(PlayerController player)
     {
-        if (!enableGrab || isBeingGrabbed || objectRigidbody == null) return;
+        if (!enableGrabbing)
+        {
+            Debug.Log($"[GRAB] Cannot grab {gameObject.name} - grabbing not enabled");
+            return;
+        }
         
+        if (isBeingGrabbed)
+        {
+            Debug.Log($"[GRAB] Cannot grab {gameObject.name} - already being grabbed");
+            return;
+        }
+        
+        if (objectRigidbody == null)
+        {
+            Debug.LogError($"[GRAB] Cannot grab {gameObject.name} - missing Rigidbody2D!");
+            return;
+        }
+        
+        Debug.Log($"[GRAB] Starting grab on {gameObject.name} by player");
         isBeingGrabbed = true;
         grabbingPlayer = player;
         
-        // Store original parent and position
         originalParent = transform.parent;
         originalLocalPosition = transform.localPosition;
     }
@@ -232,8 +244,9 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     public void StopGrab()
     {
-        if (!enableGrab || !isBeingGrabbed) return;
+        if (!enableGrabbing || !isBeingGrabbed) return;
         
+        Debug.Log($"[GRAB] Stopping grab on {gameObject.name}");
         isBeingGrabbed = false;
         grabbingPlayer = null;
     }
@@ -247,18 +260,42 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     public void Interact(PlayerController player)
     {
-        if (enableColorChange) ToggleColor();
-        if (enableToggle) ToggleObject();
-        if (enableMovement) ToggleMove();
-        if (enableActivation) ActivateObjects();
-        if (enableGrab) 
+        Debug.Log($"[INTERACT] {gameObject.name} Interact() called by player");
+        
+        if (enableColorChange)
+        {
+            Debug.Log($"[INTERACT] Toggling color on {gameObject.name}");
+            ToggleColor();
+        }
+        
+        if (enableObjectToggle)
+        {
+            Debug.Log($"[INTERACT] Toggling object on {gameObject.name}");
+            ToggleObject();
+        }
+        
+        if (enableMovement)
+        {
+            Debug.Log($"[INTERACT] Toggling movement on {gameObject.name}");
+            ToggleMove();
+        }
+        
+        if (enableObjectActivation)
+        {
+            Debug.Log($"[INTERACT] Activating objects from {gameObject.name}");
+            ActivateObjects();
+        }
+        
+        if (enableGrabbing) 
         {
             if (isBeingGrabbed)
             {
+                Debug.Log($"[INTERACT] Releasing grab on {gameObject.name}");
                 StopGrab();
             }
             else
             {
+                Debug.Log($"[INTERACT] Attempting to grab {gameObject.name}");
                 StartGrab(player);
             }
         }
