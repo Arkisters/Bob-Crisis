@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 8749038096654937005}
   - component: {fileID: 140948434899218086}
   - component: {fileID: 9118606019685556451}
+  - component: {fileID: 2552891964701348833}
+  - component: {fileID: 2905048676281476473}
   m_Layer: 8
   m_Name: Box(testing)
   m_TagString: Untagged
@@ -150,7 +152,7 @@ Rigidbody2D:
   m_Mass: 4
   m_LinearDamping: 2
   m_AngularDamping: 5
-  m_GravityScale: 3
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -160,5 +162,44 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &2552891964701348833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538190077781961504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b85804abf2627374da95f68ffbc21ab9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableColorChange: 0
+  targetColor: {r: 0, g: 1, b: 0, a: 1}
+  enableToggle: 0
+  objectToToggle: {fileID: 538190077781961504}
+  enableMovement: 0
+  moveOffset: {x: 0, y: 2, z: 0}
+  moveDuration: 1
+  enableActivation: 0
+  objectsToActivate: []
+  objectsToDeactivate: []
+  enableGrab: 1
+  grabForce: 10
+  maxGrabDistance: 5
+--- !u!114 &2905048676281476473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538190077781961504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e588697a1e3c6a4f9c5a058551ffa39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canBeReused: 1
+  targetObject: {fileID: 538190077781961504}
