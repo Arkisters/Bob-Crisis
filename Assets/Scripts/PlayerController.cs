@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float walkSpeed = 4f;
     public float crouchSpeed = 2f;
-    public float carryingSpeedMultiplier = 0.7f; // Speed reduction when carrying objects
+    public float carryingSpeedMultiplier = 0.7f;
     public float jumpForce = 6f;
     public float airAcceleration = 50f;
     public float fastFallForce = 25f;
@@ -118,6 +118,8 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
+        if (currentlyGrabbing != null) return;
+        
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         coyoteTimeCounter = 0f;
@@ -157,7 +159,6 @@ public class PlayerController : MonoBehaviour
             currentSpeed = walkSpeed;
         }
         
-        // Reduce speed when carrying an object
         if (currentlyGrabbing != null)
         {
             currentSpeed *= carryingSpeedMultiplier;
@@ -205,25 +206,18 @@ public class PlayerController : MonoBehaviour
     
     void TryInteract()
     {
-        Debug.Log("[PLAYER] Interact button pressed");
-        
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, interactionRange, interactableLayer);
-        
-        Debug.Log($"[PLAYER] Found {hitColliders.Length} colliders in interaction range");
         
         foreach (Collider2D collider in hitColliders)
         {
             Vector3 directionToObject = (collider.transform.position - transform.position).normalized;
             bool objectInFrontOfPlayer = (isFacingRight && directionToObject.x > 0) || (!isFacingRight && directionToObject.x < 0);
             
-            Debug.Log($"[PLAYER] Checking {collider.gameObject.name} - In front: {objectInFrontOfPlayer}");
-            
             if (!objectInFrontOfPlayer) continue;
             
             IInteractable interactable = collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
-                Debug.Log($"[PLAYER] Calling Interact() on {collider.gameObject.name}");
                 interactable.Interact(this);
                 
                 InteractableEffects effects = collider.GetComponent<InteractableEffects>();
@@ -231,20 +225,14 @@ public class PlayerController : MonoBehaviour
                 {
                     if (effects.IsBeingGrabbed())
                     {
-                        Debug.Log($"[PLAYER] Now grabbing {collider.gameObject.name}");
                         currentlyGrabbing = effects;
                     }
                     else if (currentlyGrabbing == effects)
                     {
-                        Debug.Log($"[PLAYER] Released {collider.gameObject.name}");
                         currentlyGrabbing = null;
                     }
                 }
                 break;
-            }
-            else
-            {
-                Debug.LogWarning($"[PLAYER] {collider.gameObject.name} has no IInteractable component!");
             }
         }
     }
@@ -291,16 +279,12 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
-            Debug.Log("[INPUT] Interact button performed");
-            
             if (currentlyGrabbing != null)
             {
-                Debug.Log("[INPUT] Releasing currently grabbed object");
                 ReleaseGrabbedObject();
             }
             else
             {
-                Debug.Log("[INPUT] Attempting to interact/grab");
                 TryInteract();
             }
         }

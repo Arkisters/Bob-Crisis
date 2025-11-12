@@ -28,21 +28,21 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     
     [Header("Grab and Carry")]
     public bool enableGrabbing = false;
-    public float grabForce = 5f;
-    public float maxGrabDistance = 2f;
+    public float holdDistance = 1f;
+    public float holdHeight = 0f;
+    public PhysicsMaterial2D zeroFrictionMaterial;
     private Transform originalParent;
     private Vector3 originalLocalPosition;
     private bool isBeingGrabbed = false;
     private PlayerController grabbingPlayer;
     private Rigidbody2D objectRigidbody;
-    private Collider2D objectCollider;
+    private GameObject carriedClone;
 
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         objectRigidbody = GetComponent<Rigidbody2D>();
-        objectCollider = GetComponent<Collider2D>();
         
         if (spriteRenderer != null)
         {
@@ -55,50 +55,24 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         originalParent = transform.parent;
         originalLocalPosition = transform.localPosition;
         
-        if (enableGrabbing)
+        if (enableGrabbing && objectRigidbody == null)
         {
-            if (objectRigidbody == null)
-                Debug.LogWarning($"InteractableEffects on {gameObject.name} has grab enabled but no Rigidbody2D component!");
-            if (objectCollider == null)
-                Debug.LogWarning($"InteractableEffects on {gameObject.name} has grab enabled but no Collider2D component!");
+            Debug.LogWarning($"InteractableEffects on {gameObject.name} has grab enabled but no Rigidbody2D component!");
         }
     }
 
 
-    void Update()
+    void FixedUpdate()
     {
         if (isMoving)
         {
-            moveTimer += Time.deltaTime;
+            moveTimer += Time.fixedDeltaTime;
             float progress = moveTimer / moveDuration;
             transform.position = Vector3.Lerp(originalPosition, targetPosition, progress);
             
             if (progress >= 1f)
             {
                 isMoving = false;
-            }
-        }
-        
-        if (isBeingGrabbed && grabbingPlayer != null && objectRigidbody != null)
-        {
-            Vector3 playerPosition = grabbingPlayer.transform.position;
-            Vector3 directionToPlayer = (playerPosition - transform.position);
-            float distanceToPlayer = directionToPlayer.magnitude;
-            
-            if (distanceToPlayer > 0.5f)
-            {
-                Vector3 forceDirection = directionToPlayer.normalized;
-                objectRigidbody.AddForce(forceDirection * grabForce, ForceMode2D.Force);
-            }
-            
-            if (distanceToPlayer > maxGrabDistance)
-            {
-                Debug.Log($"[GRAB] {gameObject.name} too far from player, releasing grab");
-                StopGrab();
-                if (grabbingPlayer != null)
-                {
-                    grabbingPlayer.ReleaseGrabbedObject();
-                }
             }
         }
     }
@@ -215,30 +189,48 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     public void StartGrab(PlayerController player)
     {
-        if (!enableGrabbing)
-        {
-            Debug.Log($"[GRAB] Cannot grab {gameObject.name} - grabbing not enabled");
-            return;
-        }
+        if (!enableGrabbing || isBeingGrabbed || objectRigidbody == null) return;
         
-        if (isBeingGrabbed)
-        {
-            Debug.Log($"[GRAB] Cannot grab {gameObject.name} - already being grabbed");
-            return;
-        }
-        
-        if (objectRigidbody == null)
-        {
-            Debug.LogError($"[GRAB] Cannot grab {gameObject.name} - missing Rigidbody2D!");
-            return;
-        }
-        
-        Debug.Log($"[GRAB] Starting grab on {gameObject.name} by player");
         isBeingGrabbed = true;
         grabbingPlayer = player;
         
-        originalParent = transform.parent;
-        originalLocalPosition = transform.localPosition;
+        carriedClone = new GameObject(gameObject.name + "_Carried");
+        carriedClone.transform.SetParent(player.transform);
+        
+        SpriteRenderer cloneSpriteRenderer = carriedClone.AddComponent<SpriteRenderer>();
+        SpriteRenderer originalSpriteRenderer = GetComponent<SpriteRenderer>();
+        if (originalSpriteRenderer != null)
+        {
+            cloneSpriteRenderer.sprite = originalSpriteRenderer.sprite;
+            cloneSpriteRenderer.color = originalSpriteRenderer.color;
+            cloneSpriteRenderer.sortingLayerName = originalSpriteRenderer.sortingLayerName;
+            cloneSpriteRenderer.sortingOrder = originalSpriteRenderer.sortingOrder;
+        }
+        
+        carriedClone.transform.localScale = transform.localScale;
+        
+        BoxCollider2D originalBoxCollider = GetComponent<BoxCollider2D>();
+        if (originalBoxCollider != null)
+        {
+            BoxCollider2D cloneCollider = carriedClone.AddComponent<BoxCollider2D>();
+            cloneCollider.size = originalBoxCollider.size;
+            cloneCollider.offset = originalBoxCollider.offset;
+            cloneCollider.sharedMaterial = zeroFrictionMaterial;
+        }
+        
+        CircleCollider2D originalCircleCollider = GetComponent<CircleCollider2D>();
+        if (originalCircleCollider != null)
+        {
+            CircleCollider2D cloneCollider = carriedClone.AddComponent<CircleCollider2D>();
+            cloneCollider.radius = originalCircleCollider.radius;
+            cloneCollider.offset = originalCircleCollider.offset;
+            cloneCollider.sharedMaterial = zeroFrictionMaterial;
+        }
+        
+        float direction = player.IsFacingRight() ? 1f : -1f;
+        carriedClone.transform.localPosition = new Vector3(direction * holdDistance, holdHeight, 0);
+        
+        gameObject.SetActive(false);
     }
 
 
@@ -246,9 +238,17 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     {
         if (!enableGrabbing || !isBeingGrabbed) return;
         
-        Debug.Log($"[GRAB] Stopping grab on {gameObject.name}");
         isBeingGrabbed = false;
         grabbingPlayer = null;
+        
+        if (carriedClone != null)
+        {
+            transform.position = carriedClone.transform.position;
+            Destroy(carriedClone);
+            carriedClone = null;
+        }
+        
+        gameObject.SetActive(true);
     }
 
 
@@ -260,42 +260,19 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     public void Interact(PlayerController player)
     {
-        Debug.Log($"[INTERACT] {gameObject.name} Interact() called by player");
-        
-        if (enableColorChange)
-        {
-            Debug.Log($"[INTERACT] Toggling color on {gameObject.name}");
-            ToggleColor();
-        }
-        
-        if (enableObjectToggle)
-        {
-            Debug.Log($"[INTERACT] Toggling object on {gameObject.name}");
-            ToggleObject();
-        }
-        
-        if (enableMovement)
-        {
-            Debug.Log($"[INTERACT] Toggling movement on {gameObject.name}");
-            ToggleMove();
-        }
-        
-        if (enableObjectActivation)
-        {
-            Debug.Log($"[INTERACT] Activating objects from {gameObject.name}");
-            ActivateObjects();
-        }
+        if (enableColorChange) ToggleColor();
+        if (enableObjectToggle) ToggleObject();
+        if (enableMovement) ToggleMove();
+        if (enableObjectActivation) ActivateObjects();
         
         if (enableGrabbing) 
         {
             if (isBeingGrabbed)
             {
-                Debug.Log($"[INTERACT] Releasing grab on {gameObject.name}");
                 StopGrab();
             }
             else
             {
-                Debug.Log($"[INTERACT] Attempting to grab {gameObject.name}");
                 StartGrab(player);
             }
         }
