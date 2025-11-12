@@ -292,12 +292,17 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             Debug.Log("[INPUT] Interact button performed");
-            TryInteract();
-        }
-        else if (context.canceled)
-        {
-            Debug.Log("[INPUT] Interact button released");
-            ReleaseGrabbedObject();
+            
+            if (currentlyGrabbing != null)
+            {
+                Debug.Log("[INPUT] Releasing currently grabbed object");
+                ReleaseGrabbedObject();
+            }
+            else
+            {
+                Debug.Log("[INPUT] Attempting to interact/grab");
+                TryInteract();
+            }
         }
     }
 
