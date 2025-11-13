@@ -170,6 +170,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            if (currentlyGrabbing != null) return;
+            
             float moveForce = horizontalInput * airAcceleration;
             rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
             
@@ -201,6 +203,36 @@ public class PlayerController : MonoBehaviour
         else if (horizontalInput < 0)
         {
             isFacingRight = false;
+        }
+        
+        UpdateSprite();
+    }
+    
+    void UpdateSprite()
+    {
+        if (spriteRenderer == null) return;
+        
+        if (Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            if (isFacingRight && walkSpritesRight != null && walkSpritesRight.Length > 0)
+            {
+                spriteRenderer.sprite = walkSpritesRight[0];
+            }
+            else if (!isFacingRight && walkSpritesLeft != null && walkSpritesLeft.Length > 0)
+            {
+                spriteRenderer.sprite = walkSpritesLeft[0];
+            }
+        }
+        else
+        {
+            if (isFacingRight && idleSpriteRight != null)
+            {
+                spriteRenderer.sprite = idleSpriteRight;
+            }
+            else if (!isFacingRight && idleSpriteLeft != null)
+            {
+                spriteRenderer.sprite = idleSpriteLeft;
+            }
         }
     }
     
@@ -256,6 +288,8 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        if (currentlyGrabbing != null) return;
+        
         if (context.performed)
         {
             jumpBufferCounter = jumpBufferTime;

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 45d1d73ce70328c40afdfd4edc48fa76
+guid: 86857944caa1968429c0d03912a1c7f4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 634909651677031149
-    second: flameframe5_0
+      213: 8582927830660368244
+    second: flame3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,11 +96,50 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: flameframe5_0
+      name: flame3_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dea2dacd6f6afc800800000000000000
-      internalID: 634909651677031149
+      spriteID: 477435f336fac1770800000000000000
+      internalID: 8582927830660368244
       vertices: []
       indices: 
       edges: []
@@ -135,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      flameframe5_0: 634909651677031149
+      flame3_0: 8582927830660368244
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

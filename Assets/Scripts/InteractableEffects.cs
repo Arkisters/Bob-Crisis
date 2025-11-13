@@ -28,8 +28,8 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     
     [Header("Grab and Carry")]
     public bool enableGrabbing = false;
-    public float holdDistance = 1f;
-    public float holdHeight = 0f;
+    public float groundClearance = 0.3f;
+    public float pickupSpeed = 5f;
     public PhysicsMaterial2D zeroFrictionMaterial;
     private Transform originalParent;
     private Vector3 originalLocalPosition;
@@ -37,6 +37,8 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     private PlayerController grabbingPlayer;
     private Rigidbody2D objectRigidbody;
     private GameObject carriedClone;
+    private bool isAnimatingPickup = false;
+    private Quaternion pickupStartRotation;
 
 
     void Start()
@@ -73,6 +75,24 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             if (progress >= 1f)
             {
                 isMoving = false;
+            }
+        }
+        
+        if (isAnimatingPickup && carriedClone != null && grabbingPlayer != null)
+        {
+            float holdDistance = CalculateHoldDistance(grabbingPlayer);
+            float holdHeight = CalculateHoldHeight(grabbingPlayer);
+            float direction = grabbingPlayer.IsFacingRight() ? 1f : -1f;
+            Vector3 localTargetPosition = new Vector3(direction * holdDistance, holdHeight, 0);
+            Vector3 worldTargetPosition = grabbingPlayer.transform.TransformPoint(localTargetPosition);
+            
+            carriedClone.transform.position = Vector3.MoveTowards(carriedClone.transform.position, worldTargetPosition, pickupSpeed * Time.fixedDeltaTime);
+            carriedClone.transform.rotation = Quaternion.RotateTowards(carriedClone.transform.rotation, Quaternion.identity, pickupSpeed * 100f * Time.fixedDeltaTime);
+            
+            if (Vector3.Distance(carriedClone.transform.position, worldTargetPosition) < 0.01f)
+            {
+                isAnimatingPickup = false;
+                carriedClone.transform.rotation = Quaternion.identity;
             }
         }
     }
@@ -197,6 +217,8 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         carriedClone = new GameObject(gameObject.name + "_Carried");
         carriedClone.transform.SetParent(player.transform);
         
+        pickupStartRotation = transform.rotation;
+        
         SpriteRenderer cloneSpriteRenderer = carriedClone.AddComponent<SpriteRenderer>();
         SpriteRenderer originalSpriteRenderer = GetComponent<SpriteRenderer>();
         if (originalSpriteRenderer != null)
@@ -207,7 +229,13 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             cloneSpriteRenderer.sortingOrder = originalSpriteRenderer.sortingOrder;
         }
         
-        carriedClone.transform.localScale = transform.localScale;
+        Vector3 worldScale = transform.lossyScale;
+        Vector3 parentScale = player.transform.lossyScale;
+        carriedClone.transform.localScale = new Vector3(
+            worldScale.x / parentScale.x,
+            worldScale.y / parentScale.y,
+            worldScale.z / parentScale.z
+        );
         
         BoxCollider2D originalBoxCollider = GetComponent<BoxCollider2D>();
         if (originalBoxCollider != null)
@@ -227,10 +255,53 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             cloneCollider.sharedMaterial = zeroFrictionMaterial;
         }
         
-        float direction = player.IsFacingRight() ? 1f : -1f;
-        carriedClone.transform.localPosition = new Vector3(direction * holdDistance, holdHeight, 0);
+        carriedClone.transform.position = transform.position;
+        carriedClone.transform.rotation = pickupStartRotation;
+        
+        isAnimatingPickup = true;
         
         gameObject.SetActive(false);
+    }
+    
+    float CalculateHoldDistance(PlayerController player)
+    {
+        float playerWidth = 0f;
+        Collider2D playerCollider = player.GetComponent<Collider2D>();
+        if (playerCollider != null)
+        {
+            playerWidth = playerCollider.bounds.size.x / 2f;
+        }
+        
+        float objectWidth = 0f;
+        Collider2D objectCollider = GetComponent<Collider2D>();
+        if (objectCollider != null)
+        {
+            objectWidth = objectCollider.bounds.size.x / 2f;
+        }
+        
+        return (playerWidth + objectWidth) / player.transform.lossyScale.x;
+    }
+    
+    float CalculateHoldHeight(PlayerController player)
+    {
+        float playerBottomY = 0f;
+        Collider2D playerCollider = player.GetComponent<Collider2D>();
+        if (playerCollider != null)
+        {
+            playerBottomY = playerCollider.bounds.min.y - player.transform.position.y;
+        }
+        
+        float objectHeight = 0f;
+        Collider2D objectCollider = GetComponent<Collider2D>();
+        if (objectCollider != null)
+        {
+            objectHeight = objectCollider.bounds.size.y / 2f;
+        }
+        
+        float localGroundY = playerBottomY / player.transform.lossyScale.y;
+        float heightOffset = (objectHeight + groundClearance) / player.transform.lossyScale.y;
+        
+        return localGroundY + heightOffset;
     }
 
 
@@ -239,11 +310,13 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (!enableGrabbing || !isBeingGrabbed) return;
         
         isBeingGrabbed = false;
+        isAnimatingPickup = false;
         grabbingPlayer = null;
         
         if (carriedClone != null)
         {
             transform.position = carriedClone.transform.position;
+            transform.rotation = carriedClone.transform.rotation;
             Destroy(carriedClone);
             carriedClone = null;
         }
