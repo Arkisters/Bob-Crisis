@@ -308,4 +308,21 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.transform.tag == "MovingPlatform")
+        {
+            transform.parent = other.transform;
+            Debug.Log("Colliding");
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.transform.tag == "MovingPlatform")
+        {
+            transform.parent = null;
+            Debug.Log("No longer colliding");
+        }
+    }
 }
