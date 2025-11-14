@@ -37,8 +37,6 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     private PlayerController grabbingPlayer;
     private Rigidbody2D objectRigidbody;
     private GameObject carriedClone;
-    private bool isAnimatingPickup = false;
-    private Quaternion pickupStartRotation;
 
 
     void Start()
@@ -75,24 +73,6 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             if (progress >= 1f)
             {
                 isMoving = false;
-            }
-        }
-        
-        if (isAnimatingPickup && carriedClone != null && grabbingPlayer != null)
-        {
-            float holdDistance = CalculateHoldDistance(grabbingPlayer);
-            float holdHeight = CalculateHoldHeight(grabbingPlayer);
-            float direction = grabbingPlayer.IsFacingRight() ? 1f : -1f;
-            Vector3 localTargetPosition = new Vector3(direction * holdDistance, holdHeight, 0);
-            Vector3 worldTargetPosition = grabbingPlayer.transform.TransformPoint(localTargetPosition);
-            
-            carriedClone.transform.position = Vector3.MoveTowards(carriedClone.transform.position, worldTargetPosition, pickupSpeed * Time.fixedDeltaTime);
-            carriedClone.transform.rotation = Quaternion.RotateTowards(carriedClone.transform.rotation, Quaternion.identity, pickupSpeed * 100f * Time.fixedDeltaTime);
-            
-            if (Vector3.Distance(carriedClone.transform.position, worldTargetPosition) < 0.01f)
-            {
-                isAnimatingPickup = false;
-                carriedClone.transform.rotation = Quaternion.identity;
             }
         }
     }
@@ -217,8 +197,6 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         carriedClone = new GameObject(gameObject.name + "_Carried");
         carriedClone.transform.SetParent(player.transform);
         
-        pickupStartRotation = transform.rotation;
-        
         SpriteRenderer cloneSpriteRenderer = carriedClone.AddComponent<SpriteRenderer>();
         SpriteRenderer originalSpriteRenderer = GetComponent<SpriteRenderer>();
         if (originalSpriteRenderer != null)
@@ -256,14 +234,25 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         }
         
         carriedClone.transform.position = transform.position;
-        carriedClone.transform.rotation = pickupStartRotation;
+        Quaternion startRotation = transform.rotation;
+        carriedClone.transform.rotation = startRotation;
         
-        isAnimatingPickup = true;
+        player.StartCoroutine(player.AnimatePickup(carriedClone, this, pickupSpeed, startRotation));
         
         gameObject.SetActive(false);
     }
     
-    float CalculateHoldDistance(PlayerController player)
+    public float GetHoldDistance(PlayerController player, GameObject clone)
+    {
+        return CalculateHoldDistance(player, clone);
+    }
+    
+    public float GetHoldHeight(PlayerController player, GameObject clone)
+    {
+        return CalculateHoldHeight(player, clone);
+    }
+    
+    float CalculateHoldDistance(PlayerController player, GameObject clone)
     {
         float playerWidth = 0f;
         Collider2D playerCollider = player.GetComponent<Collider2D>();
@@ -273,16 +262,16 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         }
         
         float objectWidth = 0f;
-        Collider2D objectCollider = GetComponent<Collider2D>();
-        if (objectCollider != null)
+        Collider2D cloneCollider = clone.GetComponent<Collider2D>();
+        if (cloneCollider != null)
         {
-            objectWidth = objectCollider.bounds.size.x / 2f;
+            objectWidth = cloneCollider.bounds.size.x / 2f;
         }
         
         return (playerWidth + objectWidth) / player.transform.lossyScale.x;
     }
     
-    float CalculateHoldHeight(PlayerController player)
+    float CalculateHoldHeight(PlayerController player, GameObject clone)
     {
         float playerBottomY = 0f;
         Collider2D playerCollider = player.GetComponent<Collider2D>();
@@ -292,10 +281,10 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         }
         
         float objectHeight = 0f;
-        Collider2D objectCollider = GetComponent<Collider2D>();
-        if (objectCollider != null)
+        Collider2D cloneCollider = clone.GetComponent<Collider2D>();
+        if (cloneCollider != null)
         {
-            objectHeight = objectCollider.bounds.size.y / 2f;
+            objectHeight = cloneCollider.bounds.size.y / 2f;
         }
         
         float localGroundY = playerBottomY / player.transform.lossyScale.y;
@@ -310,7 +299,12 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (!enableGrabbing || !isBeingGrabbed) return;
         
         isBeingGrabbed = false;
-        isAnimatingPickup = false;
+        
+        if (grabbingPlayer != null)
+        {
+            grabbingPlayer.StopAllCoroutines();
+        }
+        
         grabbingPlayer = null;
         
         if (carriedClone != null)

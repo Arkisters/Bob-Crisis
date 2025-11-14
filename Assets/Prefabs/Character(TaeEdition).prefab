@@ -81,15 +81,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 62002fb57d756ee4e85ebdf2ee98c3d6, type: 3}
+  m_Sprite: {fileID: 2126001788, guid: 62002fb57d756ee4e85ebdf2ee98c3d6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.48, y: 0.48}
+  m_Size: {x: 0.24, y: 0.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &5122218284166549820
@@ -126,17 +126,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.015, y: 0}
+  m_Offset: {x: 0.015, y: 0.005}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.48, y: 0.48}
-    newSize: {x: 0.48, y: 0.48}
+    oldSize: {x: 0.24, y: 0.48}
+    newSize: {x: 0.24, y: 0.48}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.17, y: 0.48}
+  m_Size: {x: 0.17, y: 0.47}
   m_EdgeRadius: 0
 --- !u!50 &8520398860470558638
 Rigidbody2D:
@@ -193,10 +193,12 @@ MonoBehaviour:
   jumpHoldTime: 0.2
   jumpHoldForce: 25
   animator: {fileID: 0}
-  walkSpritesLeft: []
-  walkSpritesRight: []
-  idleSpriteLeft: {fileID: 0}
-  idleSpriteRight: {fileID: 0}
+  walkSpritesLeft:
+  - {fileID: 2126001788, guid: 62002fb57d756ee4e85ebdf2ee98c3d6, type: 3}
+  walkSpritesRight:
+  - {fileID: 1223792635, guid: 62002fb57d756ee4e85ebdf2ee98c3d6, type: 3}
+  idleSpriteLeft: {fileID: 2126001788, guid: 62002fb57d756ee4e85ebdf2ee98c3d6, type: 3}
+  idleSpriteRight: {fileID: 1223792635, guid: 62002fb57d756ee4e85ebdf2ee98c3d6, type: 3}
   interactionRange: 0.75
   interactableLayer:
     serializedVersion: 2

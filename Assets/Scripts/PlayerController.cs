@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public Sprite[] walkSpritesRight;
     public Sprite idleSpriteLeft;
     public Sprite idleSpriteRight;
+    public Sprite carryingSpriteLeft;
+    public Sprite carryingSpriteRight;
     
     [Header("Interaction")]
     public float interactionRange = 0.75f;
@@ -45,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private bool jumpHeld;
     private bool isFacingRight = true;
     private InteractableEffects currentlyGrabbing;
+    private bool carryingOnRightSide = true;
     
     private const string ANIM_SPEED = "Speed";
     private const string ANIM_IS_JUMPING = "IsJumping";
@@ -196,6 +200,8 @@ public class PlayerController : MonoBehaviour
 
     void UpdateSpriteDirection()
     {
+        if (currentlyGrabbing != null) return;
+        
         if (horizontalInput > 0)
         {
             isFacingRight = true;
@@ -212,7 +218,18 @@ public class PlayerController : MonoBehaviour
     {
         if (spriteRenderer == null) return;
         
-        if (Mathf.Abs(horizontalInput) > 0.01f)
+        if (currentlyGrabbing != null)
+        {
+            if (carryingOnRightSide && carryingSpriteRight != null)
+            {
+                spriteRenderer.sprite = carryingSpriteRight;
+            }
+            else if (!carryingOnRightSide && carryingSpriteLeft != null)
+            {
+                spriteRenderer.sprite = carryingSpriteLeft;
+            }
+        }
+        else if (Mathf.Abs(horizontalInput) > 0.01f)
         {
             if (isFacingRight && walkSpritesRight != null && walkSpritesRight.Length > 0)
             {
@@ -357,6 +374,36 @@ public class PlayerController : MonoBehaviour
         {
             transform.parent = null;
             Debug.Log("No longer colliding");
+        }
+    }
+    
+    public IEnumerator AnimatePickup(GameObject clone, InteractableEffects interactableEffects, float pickupSpeed, Quaternion startRotation)
+    {
+        float objectSide = clone.transform.position.x - transform.position.x;
+        bool objectOnRightSide = objectSide > 0;
+        carryingOnRightSide = objectOnRightSide;
+        
+        isFacingRight = objectOnRightSide;
+        UpdateSprite();
+        
+        while (true)
+        {
+            float holdDistance = interactableEffects.GetHoldDistance(this, clone);
+            float holdHeight = interactableEffects.GetHoldHeight(this, clone);
+            float direction = objectOnRightSide ? 1f : -1f;
+            Vector3 localTargetPosition = new Vector3(direction * holdDistance, holdHeight, 0);
+            Vector3 worldTargetPosition = transform.TransformPoint(localTargetPosition);
+            
+            clone.transform.position = Vector3.MoveTowards(clone.transform.position, worldTargetPosition, pickupSpeed * Time.deltaTime);
+            clone.transform.rotation = Quaternion.RotateTowards(clone.transform.rotation, Quaternion.identity, pickupSpeed * 100f * Time.deltaTime);
+            
+            if (Vector3.Distance(clone.transform.position, worldTargetPosition) < 0.01f)
+            {
+                clone.transform.rotation = Quaternion.identity;
+                yield break;
+            }
+            
+            yield return null;
         }
     }
 }
