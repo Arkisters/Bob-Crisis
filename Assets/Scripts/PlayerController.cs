@@ -25,19 +25,12 @@ public class PlayerController : MonoBehaviour
     
     [Header("Animation")]
     public Animator animator;
-    public Sprite[] walkSpritesLeft;
-    public Sprite[] walkSpritesRight;
-    public Sprite idleSpriteLeft;
-    public Sprite idleSpriteRight;
-    public Sprite carryingSpriteLeft;
-    public Sprite carryingSpriteRight;
     
     [Header("Interaction")]
     public float interactionRange = 0.75f;
     public LayerMask interactableLayer;
     
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
     private bool isGrounded;
     private bool isCrouching;
     private float coyoteTimeCounter;
@@ -50,15 +43,13 @@ public class PlayerController : MonoBehaviour
     private InteractableEffects currentlyGrabbing;
     private bool carryingOnRightSide = true;
     
-    private const string ANIM_SPEED = "Speed";
-    private const string ANIM_IS_JUMPING = "IsJumping";
-    private const string ANIM_IS_GROUNDED = "IsGrounded";
-    private const string ANIM_IS_CROUCHING = "IsCrouching";
+    private const string ANIM_X = "x";
+    private const string ANIM_IS_CROUCHING = "isCrouching";
+    private const string ANIM_IS_CARRYING = "isCarrying";
     
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         
         if (animator == null)
         {
@@ -102,7 +93,7 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
         }
 
-        if (jumpHoldCounter > 0f && jumpHeld)
+        if (jumpHoldCounter > 0f && jumpHeld && currentlyGrabbing == null)
         {
             rb.AddForce(Vector2.up * jumpHoldForce, ForceMode2D.Force);
             jumpHoldCounter -= Time.fixedDeltaTime;
@@ -191,10 +182,22 @@ public class PlayerController : MonoBehaviour
     {
         if (animator == null) return;
         
-        animator.SetFloat(ANIM_SPEED, Mathf.Abs(horizontalInput));
-        animator.SetBool(ANIM_IS_GROUNDED, isGrounded);
-        animator.SetBool(ANIM_IS_JUMPING, !isGrounded && rb.linearVelocity.y > 0.1f);
+        // Set x value for blend tree (-1 left, 0 idle, 1 right)
+        float xValue;
+        if (Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            // Moving - use full value
+            xValue = horizontalInput > 0 ? 1f : -1f;
+        }
+        else
+        {
+            // Idle - use small value based on facing direction to pick correct idle
+            xValue = isFacingRight ? 0.01f : -0.01f;
+        }
+        
+        animator.SetFloat(ANIM_X, xValue);
         animator.SetBool(ANIM_IS_CROUCHING, isCrouching);
+        animator.SetBool(ANIM_IS_CARRYING, currentlyGrabbing != null);
     }
 
 
@@ -209,47 +212,6 @@ public class PlayerController : MonoBehaviour
         else if (horizontalInput < 0)
         {
             isFacingRight = false;
-        }
-        
-        UpdateSprite();
-    }
-    
-    void UpdateSprite()
-    {
-        if (spriteRenderer == null) return;
-        
-        if (currentlyGrabbing != null)
-        {
-            if (carryingOnRightSide && carryingSpriteRight != null)
-            {
-                spriteRenderer.sprite = carryingSpriteRight;
-            }
-            else if (!carryingOnRightSide && carryingSpriteLeft != null)
-            {
-                spriteRenderer.sprite = carryingSpriteLeft;
-            }
-        }
-        else if (Mathf.Abs(horizontalInput) > 0.01f)
-        {
-            if (isFacingRight && walkSpritesRight != null && walkSpritesRight.Length > 0)
-            {
-                spriteRenderer.sprite = walkSpritesRight[0];
-            }
-            else if (!isFacingRight && walkSpritesLeft != null && walkSpritesLeft.Length > 0)
-            {
-                spriteRenderer.sprite = walkSpritesLeft[0];
-            }
-        }
-        else
-        {
-            if (isFacingRight && idleSpriteRight != null)
-            {
-                spriteRenderer.sprite = idleSpriteRight;
-            }
-            else if (!isFacingRight && idleSpriteLeft != null)
-            {
-                spriteRenderer.sprite = idleSpriteLeft;
-            }
         }
     }
     
@@ -384,7 +346,6 @@ public class PlayerController : MonoBehaviour
         carryingOnRightSide = objectOnRightSide;
         
         isFacingRight = objectOnRightSide;
-        UpdateSprite();
         
         while (true)
         {
