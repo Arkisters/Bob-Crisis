@@ -187,8 +187,7 @@ MonoBehaviour:
   objectsToActivate: []
   objectsToDeactivate: []
   enableGrabbing: 1
-  holdDistance: 1
-  holdHeight: 0
+  groundClearance: 0.3
   zeroFrictionMaterial: {fileID: 6200000, guid: 5d8dffe102b65f2479f6d05d3b8784a8, type: 2}
 --- !u!114 &2905048676281476473
 MonoBehaviour:
