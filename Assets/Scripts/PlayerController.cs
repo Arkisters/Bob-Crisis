@@ -26,11 +26,45 @@ public class PlayerController : MonoBehaviour
     [Header("Animation")]
     public Animator animator;
     
+    [Header("Collider Settings")]
+    [Header("Normal State - Right")]
+    public Vector2 normalColliderSizeRight = new Vector2(1f, 2f);
+    public Vector2 normalColliderOffsetRight = new Vector2(0f, 0f);
+    
+    [Header("Normal State - Left")]
+    public Vector2 normalColliderSizeLeft = new Vector2(1f, 2f);
+    public Vector2 normalColliderOffsetLeft = new Vector2(0f, 0f);
+    
+    [Header("Crouch State - Right")]
+    public Vector2 crouchColliderSizeRight = new Vector2(1f, 1f);
+    public Vector2 crouchColliderOffsetRight = new Vector2(0f, -0.5f);
+    
+    [Header("Crouch State - Left")]
+    public Vector2 crouchColliderSizeLeft = new Vector2(1f, 1f);
+    public Vector2 crouchColliderOffsetLeft = new Vector2(0f, -0.5f);
+    
+    [Header("Carrying State - Right")]
+    public Vector2 carryingColliderSizeRight = new Vector2(1f, 2f);
+    public Vector2 carryingColliderOffsetRight = new Vector2(0f, 0f);
+    
+    [Header("Carrying State - Left")]
+    public Vector2 carryingColliderSizeLeft = new Vector2(1f, 2f);
+    public Vector2 carryingColliderOffsetLeft = new Vector2(0f, 0f);
+    
+    [Header("Crouch + Carrying State - Right")]
+    public Vector2 crouchCarryingColliderSizeRight = new Vector2(1f, 1f);
+    public Vector2 crouchCarryingColliderOffsetRight = new Vector2(0f, -0.5f);
+    
+    [Header("Crouch + Carrying State - Left")]
+    public Vector2 crouchCarryingColliderSizeLeft = new Vector2(1f, 1f);
+    public Vector2 crouchCarryingColliderOffsetLeft = new Vector2(0f, -0.5f);
+    
     [Header("Interaction")]
     public float interactionRange = 0.75f;
     public LayerMask interactableLayer;
     
     private Rigidbody2D rb;
+    private BoxCollider2D boxCollider;
     private bool isGrounded;
     private bool isCrouching;
     private float coyoteTimeCounter;
@@ -42,6 +76,9 @@ public class PlayerController : MonoBehaviour
     private bool isFacingRight = true;
     private InteractableEffects currentlyGrabbing;
     private bool carryingOnRightSide = true;
+    private bool wasCrouching = false;
+    private bool wasCarrying = false;
+    private bool wasFacingRight = true;
     
     private const string ANIM_X = "x";
     private const string ANIM_IS_CROUCHING = "isCrouching";
@@ -50,6 +87,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
         
         if (animator == null)
         {
@@ -70,6 +108,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         UpdateAnimations();
+        UpdateCollider();
     }
 
     void FixedUpdate()
@@ -198,6 +237,78 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat(ANIM_X, xValue);
         animator.SetBool(ANIM_IS_CROUCHING, isCrouching);
         animator.SetBool(ANIM_IS_CARRYING, currentlyGrabbing != null);
+    }
+
+    void UpdateCollider()
+    {
+        if (boxCollider == null) return;
+        
+        bool isCarrying = currentlyGrabbing != null;
+        
+        // Only update if state changed
+        if (wasCrouching != isCrouching || wasCarrying != isCarrying || wasFacingRight != isFacingRight)
+        {
+            if (isCrouching && isCarrying)
+            {
+                // Crouch + Carrying
+                if (isFacingRight)
+                {
+                    boxCollider.size = crouchCarryingColliderSizeRight;
+                    boxCollider.offset = crouchCarryingColliderOffsetRight;
+                }
+                else
+                {
+                    boxCollider.size = crouchCarryingColliderSizeLeft;
+                    boxCollider.offset = crouchCarryingColliderOffsetLeft;
+                }
+            }
+            else if (isCrouching)
+            {
+                // Just Crouch
+                if (isFacingRight)
+                {
+                    boxCollider.size = crouchColliderSizeRight;
+                    boxCollider.offset = crouchColliderOffsetRight;
+                }
+                else
+                {
+                    boxCollider.size = crouchColliderSizeLeft;
+                    boxCollider.offset = crouchColliderOffsetLeft;
+                }
+            }
+            else if (isCarrying)
+            {
+                // Just Carrying
+                if (isFacingRight)
+                {
+                    boxCollider.size = carryingColliderSizeRight;
+                    boxCollider.offset = carryingColliderOffsetRight;
+                }
+                else
+                {
+                    boxCollider.size = carryingColliderSizeLeft;
+                    boxCollider.offset = carryingColliderOffsetLeft;
+                }
+            }
+            else
+            {
+                // Normal
+                if (isFacingRight)
+                {
+                    boxCollider.size = normalColliderSizeRight;
+                    boxCollider.offset = normalColliderOffsetRight;
+                }
+                else
+                {
+                    boxCollider.size = normalColliderSizeLeft;
+                    boxCollider.offset = normalColliderOffsetLeft;
+                }
+            }
+            
+            wasCrouching = isCrouching;
+            wasCarrying = isCarrying;
+            wasFacingRight = isFacingRight;
+        }
     }
 
 
