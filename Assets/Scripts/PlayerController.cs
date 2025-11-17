@@ -7,10 +7,10 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float walkSpeed = 4f;
     public float crouchSpeed = 2f;
-    public float carryingSpeedMultiplier = 0.7f;
-    public float jumpForce = 6f;
+    public float carryingSpeedMultiplier = 1f;
+    public float jumpForce = 8f;
     public float airAcceleration = 50f;
-    public float fastFallForce = 25f;
+    public float fastFallForce = 15f;
 
     [Header("Ground Detection")]
     public Transform groundCheck;
@@ -21,43 +21,43 @@ public class PlayerController : MonoBehaviour
     public float coyoteTime = 0.15f;
     public float jumpBufferTime = 0.15f;
     public float jumpHoldTime = 0.2f;
-    public float jumpHoldForce = 18f;
+    public float jumpHoldForce = 25f;
     
     [Header("Animation")]
     public Animator animator;
     
     [Header("Collider Settings")]
     [Header("Normal State - Right")]
-    public Vector2 normalColliderSizeRight = new Vector2(1f, 2f);
-    public Vector2 normalColliderOffsetRight = new Vector2(0f, 0f);
+    public Vector2 normalColliderSizeRight = new Vector2(0.17f, 0.47f);
+    public Vector2 normalColliderOffsetRight = new Vector2(-0.015f, 0.005f);
     
     [Header("Normal State - Left")]
-    public Vector2 normalColliderSizeLeft = new Vector2(1f, 2f);
-    public Vector2 normalColliderOffsetLeft = new Vector2(0f, 0f);
+    public Vector2 normalColliderSizeLeft = new Vector2(0.17f, 0.47f);
+    public Vector2 normalColliderOffsetLeft = new Vector2(0.015f, 0.005f);
     
     [Header("Crouch State - Right")]
-    public Vector2 crouchColliderSizeRight = new Vector2(1f, 1f);
-    public Vector2 crouchColliderOffsetRight = new Vector2(0f, -0.5f);
+    public Vector2 crouchColliderSizeRight = new Vector2(0.17f, 0.47f);
+    public Vector2 crouchColliderOffsetRight = new Vector2(0.015f, 0.005f);
     
     [Header("Crouch State - Left")]
-    public Vector2 crouchColliderSizeLeft = new Vector2(1f, 1f);
-    public Vector2 crouchColliderOffsetLeft = new Vector2(0f, -0.5f);
+    public Vector2 crouchColliderSizeLeft = new Vector2(0.17f, 0.47f);
+    public Vector2 crouchColliderOffsetLeft = new Vector2(0.015f, 0.005f);
     
     [Header("Carrying State - Right")]
-    public Vector2 carryingColliderSizeRight = new Vector2(1f, 2f);
-    public Vector2 carryingColliderOffsetRight = new Vector2(0f, 0f);
+    public Vector2 carryingColliderSizeRight = new Vector2(0.17f, 0.47f);
+    public Vector2 carryingColliderOffsetRight = new Vector2(0.015f, 0.005f);
     
     [Header("Carrying State - Left")]
-    public Vector2 carryingColliderSizeLeft = new Vector2(1f, 2f);
-    public Vector2 carryingColliderOffsetLeft = new Vector2(0f, 0f);
+    public Vector2 carryingColliderSizeLeft = new Vector2(0.17f, 0.47f);
+    public Vector2 carryingColliderOffsetLeft = new Vector2(0.015f, 0.005f);
     
     [Header("Crouch + Carrying State - Right")]
-    public Vector2 crouchCarryingColliderSizeRight = new Vector2(1f, 1f);
-    public Vector2 crouchCarryingColliderOffsetRight = new Vector2(0f, -0.5f);
+    public Vector2 crouchCarryingColliderSizeRight = new Vector2(0.17f, 0.47f);
+    public Vector2 crouchCarryingColliderOffsetRight = new Vector2(0.015f, 0.005f);
     
     [Header("Crouch + Carrying State - Left")]
-    public Vector2 crouchCarryingColliderSizeLeft = new Vector2(1f, 1f);
-    public Vector2 crouchCarryingColliderOffsetLeft = new Vector2(0f, -0.5f);
+    public Vector2 crouchCarryingColliderSizeLeft = new Vector2(0.17f, 0.47f);
+    public Vector2 crouchCarryingColliderOffsetLeft = new Vector2(0.015f, 0.005f);
     
     [Header("Interaction")]
     public float interactionRange = 0.75f;
