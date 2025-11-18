@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 7b7c8f3cf178b7441877a6664f6acfab
+guid: a001078aecdf9cd44a5e88885aa0df0c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1160962903127804352
-    second: flame5_0
+      213: -6858293130464569113
+    second: metalsaw_0
+  - first:
+      213: 7712521679207482879
+    second: metalsaw_1
+  - first:
+      213: -5707275215234488425
+    second: metalsaw_2
+  - first:
+      213: -1264770942531387011
+    second: metalsaw_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,56 +105,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: flame5_0
+      name: metalsaw_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 15
         y: 0
-        width: 96
-        height: 31
+        width: 35
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0c9c65efb919c1010800000000000000
-      internalID: 1160962903127804352
+      spriteID: 7e858211cb272d0a0800000000000000
+      internalID: -6858293130464569113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metalsaw_1
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 0
+        width: 34
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff549a3ca91680b60800000000000000
+      internalID: 7712521679207482879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metalsaw_2
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 0
+        width: 35
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 797ae802e6fabc0b0800000000000000
+      internalID: -5707275215234488425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metalsaw_3
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 0
+        width: 34
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d714e206781a27ee0800000000000000
+      internalID: -1264770942531387011
       vertices: []
       indices: 
       edges: []
@@ -174,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      flame5_0: 1160962903127804352
+      metalsaw_0: -6858293130464569113
+      metalsaw_1: 7712521679207482879
+      metalsaw_2: -5707275215234488425
+      metalsaw_3: -1264770942531387011
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

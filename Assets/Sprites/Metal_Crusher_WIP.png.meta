@@ -1,0 +1,1885 @@
+fileFormatVersion: 2
+guid: 49718534e54ab7249a176cce2d36bd84
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8091058470843298460
+    second: Metal_Crusher_WIP_0
+  - first:
+      213: -5830763089788558205
+    second: Metal_Crusher_WIP_1
+  - first:
+      213: -8768590319748041477
+    second: Metal_Crusher_WIP_2
+  - first:
+      213: -514561664691176715
+    second: Metal_Crusher_WIP_3
+  - first:
+      213: 3092069329068371505
+    second: Metal_Crusher_WIP_4
+  - first:
+      213: 5337816686559736530
+    second: Metal_Crusher_WIP_5
+  - first:
+      213: -6043740103085262129
+    second: Metal_Crusher_WIP_6
+  - first:
+      213: -4027810457396640924
+    second: Metal_Crusher_WIP_7
+  - first:
+      213: 92348283708517564
+    second: Metal_Crusher_WIP_8
+  - first:
+      213: 1789956273161917581
+    second: Metal_Crusher_WIP_9
+  - first:
+      213: -8100858107106280777
+    second: Metal_Crusher_WIP_10
+  - first:
+      213: 4981661185175660944
+    second: Metal_Crusher_WIP_11
+  - first:
+      213: -5499263325778078795
+    second: Metal_Crusher_WIP_12
+  - first:
+      213: -5915087604771827015
+    second: Metal_Crusher_WIP_13
+  - first:
+      213: -2426746330174820793
+    second: Metal_Crusher_WIP_14
+  - first:
+      213: 9113321167188629812
+    second: Metal_Crusher_WIP_15
+  - first:
+      213: -4130623687916294759
+    second: Metal_Crusher_WIP_16
+  - first:
+      213: -2488978069592675184
+    second: Metal_Crusher_WIP_17
+  - first:
+      213: -6921879130565536509
+    second: Metal_Crusher_WIP_18
+  - first:
+      213: 4891817176087818396
+    second: Metal_Crusher_WIP_19
+  - first:
+      213: 6364371008107972234
+    second: Metal_Crusher_WIP_20
+  - first:
+      213: -124389211864699584
+    second: Metal_Crusher_WIP_21
+  - first:
+      213: 8417620589470589750
+    second: Metal_Crusher_WIP_22
+  - first:
+      213: 6537322783190465797
+    second: Metal_Crusher_WIP_23
+  - first:
+      213: -3026426485356960504
+    second: Metal_Crusher_WIP_24
+  - first:
+      213: -3334187858536169351
+    second: Metal_Crusher_WIP_25
+  - first:
+      213: -8902735027634329445
+    second: Metal_Crusher_WIP_26
+  - first:
+      213: 1511182533251979158
+    second: Metal_Crusher_WIP_27
+  - first:
+      213: 2666296642342092875
+    second: Metal_Crusher_WIP_28
+  - first:
+      213: 5382391499142748512
+    second: Metal_Crusher_WIP_29
+  - first:
+      213: -602541686313869919
+    second: Metal_Crusher_WIP_30
+  - first:
+      213: -3949237204735798742
+    second: Metal_Crusher_WIP_31
+  - first:
+      213: -8422255109966993316
+    second: Metal_Crusher_WIP_32
+  - first:
+      213: -7559429502583213090
+    second: Metal_Crusher_WIP_33
+  - first:
+      213: -848465668275246175
+    second: Metal_Crusher_WIP_34
+  - first:
+      213: 6430414194285593360
+    second: Metal_Crusher_WIP_35
+  - first:
+      213: -1034470572409335620
+    second: Metal_Crusher_WIP_36
+  - first:
+      213: 7412426946786402398
+    second: Metal_Crusher_WIP_37
+  - first:
+      213: -1016017223074256385
+    second: Metal_Crusher_WIP_38
+  - first:
+      213: -8659220303240992662
+    second: Metal_Crusher_WIP_39
+  - first:
+      213: -2628103308446207230
+    second: Metal_Crusher_WIP_40
+  - first:
+      213: -1318329737361673484
+    second: Metal_Crusher_WIP_41
+  - first:
+      213: -6577532687621471716
+    second: Metal_Crusher_WIP_42
+  - first:
+      213: 7227092661394162684
+    second: Metal_Crusher_WIP_43
+  - first:
+      213: -790818265205767014
+    second: Metal_Crusher_WIP_44
+  - first:
+      213: 2804217219840039494
+    second: Metal_Crusher_WIP_45
+  - first:
+      213: 4731343521108837639
+    second: Metal_Crusher_WIP_46
+  - first:
+      213: -529142331152276463
+    second: Metal_Crusher_WIP_47
+  - first:
+      213: -1324285926797101548
+    second: Metal_Crusher_WIP_48
+  - first:
+      213: 7188766280510323613
+    second: Metal_Crusher_WIP_49
+  - first:
+      213: -5440605531031124160
+    second: Metal_Crusher_WIP_50
+  - first:
+      213: -3995949619791720506
+    second: Metal_Crusher_WIP_51
+  - first:
+      213: 6335771251531206438
+    second: Metal_Crusher_WIP_52
+  - first:
+      213: 5154481470618535031
+    second: Metal_Crusher_WIP_53
+  - first:
+      213: -2909891756402913831
+    second: Metal_Crusher_WIP_54
+  - first:
+      213: -64067142509613789
+    second: Metal_Crusher_WIP_55
+  - first:
+      213: 8021073441457659346
+    second: Metal_Crusher_WIP_56
+  - first:
+      213: -6992191265555930094
+    second: Metal_Crusher_WIP_57
+  - first:
+      213: 5264669920379272724
+    second: Metal_Crusher_WIP_58
+  - first:
+      213: 9141704480676959063
+    second: Metal_Crusher_WIP_59
+  - first:
+      213: 7251308295708795543
+    second: Metal_Crusher_WIP_60
+  - first:
+      213: 4368951050484835223
+    second: Metal_Crusher_WIP_61
+  - first:
+      213: -2235407026733726923
+    second: Metal_Crusher_WIP_62
+  - first:
+      213: -4907272490648992494
+    second: Metal_Crusher_WIP_63
+  - first:
+      213: 7528786562461838303
+    second: Metal_Crusher_WIP_64
+  - first:
+      213: -7224089837509656964
+    second: Metal_Crusher_WIP_65
+  - first:
+      213: -4365292847465510468
+    second: Metal_Crusher_WIP_66
+  - first:
+      213: 1982082850320548409
+    second: Metal_Crusher_WIP_67
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_0
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 0
+        width: 74
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46d48746039c6bf80800000000000000
+      internalID: -8091058470843298460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_1
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 1
+        width: 74
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 384a1bfccd7f41fa0800000000000000
+      internalID: -5830763089788558205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_2
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 3
+        width: 74
+        height: 125
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf43d7aef85bf4680800000000000000
+      internalID: -8768590319748041477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_3
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 5
+        width: 74
+        height: 123
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fa7c0964e8ebd8f0800000000000000
+      internalID: -514561664691176715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_4
+      rect:
+        serializedVersion: 2
+        x: 539
+        y: 7
+        width: 74
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13e200c1cac39ea20800000000000000
+      internalID: 3092069329068371505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_5
+      rect:
+        serializedVersion: 2
+        x: 667
+        y: 9
+        width: 74
+        height: 119
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d2bb86defbb31a40800000000000000
+      internalID: 5337816686559736530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_6
+      rect:
+        serializedVersion: 2
+        x: 795
+        y: 11
+        width: 74
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcaf1d8b562502ca0800000000000000
+      internalID: -6043740103085262129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_7
+      rect:
+        serializedVersion: 2
+        x: 923
+        y: 13
+        width: 74
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4630540bab75a18c0800000000000000
+      internalID: -4027810457396640924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_8
+      rect:
+        serializedVersion: 2
+        x: 1051
+        y: 15
+        width: 74
+        height: 113
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbc20165646184100800000000000000
+      internalID: 92348283708517564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_9
+      rect:
+        serializedVersion: 2
+        x: 1179
+        y: 17
+        width: 74
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d845c413fb337d810800000000000000
+      internalID: 1789956273161917581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_10
+      rect:
+        serializedVersion: 2
+        x: 1307
+        y: 19
+        width: 74
+        height: 109
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ba3616c878f39f80800000000000000
+      internalID: -8100858107106280777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_11
+      rect:
+        serializedVersion: 2
+        x: 1435
+        y: 21
+        width: 74
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0992fb5347a622540800000000000000
+      internalID: 4981661185175660944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_12
+      rect:
+        serializedVersion: 2
+        x: 1563
+        y: 23
+        width: 74
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b31aac3421bea3b0800000000000000
+      internalID: -5499263325778078795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_13
+      rect:
+        serializedVersion: 2
+        x: 1691
+        y: 25
+        width: 74
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b25246b92369eda0800000000000000
+      internalID: -5915087604771827015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_14
+      rect:
+        serializedVersion: 2
+        x: 1819
+        y: 27
+        width: 74
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74e62f5f117725ed0800000000000000
+      internalID: -2426746330174820793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_15
+      rect:
+        serializedVersion: 2
+        x: 1947
+        y: 29
+        width: 74
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 439935e2155097e70800000000000000
+      internalID: 9113321167188629812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_16
+      rect:
+        serializedVersion: 2
+        x: 2075
+        y: 31
+        width: 74
+        height: 97
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99d6fec04a31da6c0800000000000000
+      internalID: -4130623687916294759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_17
+      rect:
+        serializedVersion: 2
+        x: 2203
+        y: 33
+        width: 74
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09ce03402af557dd0800000000000000
+      internalID: -2488978069592675184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_18
+      rect:
+        serializedVersion: 2
+        x: 2331
+        y: 35
+        width: 74
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 305937cba9b80ff90800000000000000
+      internalID: -6921879130565536509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_19
+      rect:
+        serializedVersion: 2
+        x: 2459
+        y: 37
+        width: 74
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c907edebdc933e340800000000000000
+      internalID: 4891817176087818396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_20
+      rect:
+        serializedVersion: 2
+        x: 2587
+        y: 39
+        width: 74
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a86021546b9c25850800000000000000
+      internalID: 6364371008107972234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_21
+      rect:
+        serializedVersion: 2
+        x: 2715
+        y: 41
+        width: 74
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04de9ecbba4164ef0800000000000000
+      internalID: -124389211864699584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_22
+      rect:
+        serializedVersion: 2
+        x: 2843
+        y: 43
+        width: 74
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 633a861e35561d470800000000000000
+      internalID: 8417620589470589750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_23
+      rect:
+        serializedVersion: 2
+        x: 2971
+        y: 45
+        width: 74
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50db2226f6c39ba50800000000000000
+      internalID: 6537322783190465797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_24
+      rect:
+        serializedVersion: 2
+        x: 3099
+        y: 47
+        width: 74
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 805e6717529fff5d0800000000000000
+      internalID: -3026426485356960504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_25
+      rect:
+        serializedVersion: 2
+        x: 3227
+        y: 49
+        width: 74
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9700885dec59ab1d0800000000000000
+      internalID: -3334187858536169351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_26
+      rect:
+        serializedVersion: 2
+        x: 3355
+        y: 51
+        width: 74
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b98ad6c39a1237480800000000000000
+      internalID: -8902735027634329445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_27
+      rect:
+        serializedVersion: 2
+        x: 3483
+        y: 53
+        width: 74
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6975245e18cc8f410800000000000000
+      internalID: 1511182533251979158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_28
+      rect:
+        serializedVersion: 2
+        x: 3611
+        y: 55
+        width: 74
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b400e986ba6900520800000000000000
+      internalID: 2666296642342092875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_29
+      rect:
+        serializedVersion: 2
+        x: 3739
+        y: 57
+        width: 74
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0695c742d8812ba40800000000000000
+      internalID: 5382391499142748512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_30
+      rect:
+        serializedVersion: 2
+        x: 3867
+        y: 59
+        width: 74
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ad95e8578753a7f0800000000000000
+      internalID: -602541686313869919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_31
+      rect:
+        serializedVersion: 2
+        x: 3995
+        y: 61
+        width: 74
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2257fdafad7139c0800000000000000
+      internalID: -3949237204735798742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_32
+      rect:
+        serializedVersion: 2
+        x: 4123
+        y: 63
+        width: 74
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c58e2bab9932e1b80800000000000000
+      internalID: -8422255109966993316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_33
+      rect:
+        serializedVersion: 2
+        x: 4251
+        y: 65
+        width: 74
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed37be14be2871790800000000000000
+      internalID: -7559429502583213090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_34
+      rect:
+        serializedVersion: 2
+        x: 4379
+        y: 67
+        width: 74
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1abe65658f4a934f0800000000000000
+      internalID: -848465668275246175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_35
+      rect:
+        serializedVersion: 2
+        x: 4507
+        y: 69
+        width: 74
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 013c501d3ab6d3950800000000000000
+      internalID: 6430414194285593360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_36
+      rect:
+        serializedVersion: 2
+        x: 4635
+        y: 71
+        width: 74
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb052f8ce72d4a1f0800000000000000
+      internalID: -1034470572409335620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_37
+      rect:
+        serializedVersion: 2
+        x: 4763
+        y: 73
+        width: 74
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e50acbe090b3ed660800000000000000
+      internalID: 7412426946786402398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_38
+      rect:
+        serializedVersion: 2
+        x: 4891
+        y: 75
+        width: 74
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff9eafcf7b166e1f0800000000000000
+      internalID: -1016017223074256385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_39
+      rect:
+        serializedVersion: 2
+        x: 5019
+        y: 77
+        width: 74
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a686871430544d780800000000000000
+      internalID: -8659220303240992662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_40
+      rect:
+        serializedVersion: 2
+        x: 5147
+        y: 79
+        width: 74
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 203f80b17f9178bd0800000000000000
+      internalID: -2628103308446207230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_41
+      rect:
+        serializedVersion: 2
+        x: 5275
+        y: 81
+        width: 74
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f239b3b61a54bde0800000000000000
+      internalID: -1318329737361673484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_42
+      rect:
+        serializedVersion: 2
+        x: 5403
+        y: 83
+        width: 74
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c124dcfaed8e7b4a0800000000000000
+      internalID: -6577532687621471716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_43
+      rect:
+        serializedVersion: 2
+        x: 5531
+        y: 85
+        width: 74
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf34b391c7acb4460800000000000000
+      internalID: 7227092661394162684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_44
+      rect:
+        serializedVersion: 2
+        x: 5659
+        y: 87
+        width: 74
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a94058c4af27605f0800000000000000
+      internalID: -790818265205767014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_45
+      rect:
+        serializedVersion: 2
+        x: 5787
+        y: 89
+        width: 74
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64a599d34b49ae620800000000000000
+      internalID: 2804217219840039494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_46
+      rect:
+        serializedVersion: 2
+        x: 5915
+        y: 91
+        width: 74
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 705c90e5ddb19a140800000000000000
+      internalID: 4731343521108837639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_47
+      rect:
+        serializedVersion: 2
+        x: 6043
+        y: 93
+        width: 74
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 114eb047adb18a8f0800000000000000
+      internalID: -529142331152276463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_48
+      rect:
+        serializedVersion: 2
+        x: 6171
+        y: 95
+        width: 74
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 416b53847f03f9de0800000000000000
+      internalID: -1324285926797101548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_49
+      rect:
+        serializedVersion: 2
+        x: 6299
+        y: 97
+        width: 74
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9bbf1b28d0a3c360800000000000000
+      internalID: 7188766280510323613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_50
+      rect:
+        serializedVersion: 2
+        x: 6427
+        y: 99
+        width: 74
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0474dd758161f74b0800000000000000
+      internalID: -5440605531031124160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_51
+      rect:
+        serializedVersion: 2
+        x: 6555
+        y: 101
+        width: 74
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cf05f30ef88b88c0800000000000000
+      internalID: -3995949619791720506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_52
+      rect:
+        serializedVersion: 2
+        x: 6683
+        y: 103
+        width: 74
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62f46a9826e2de750800000000000000
+      internalID: 6335771251531206438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_53
+      rect:
+        serializedVersion: 2
+        x: 6811
+        y: 105
+        width: 74
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7740d818695688740800000000000000
+      internalID: 5154481470618535031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_54
+      rect:
+        serializedVersion: 2
+        x: 6939
+        y: 107
+        width: 74
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dd44c46ddcfd97d0800000000000000
+      internalID: -2909891756402913831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_55
+      rect:
+        serializedVersion: 2
+        x: 7067
+        y: 109
+        width: 74
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32da0f8f5436c1ff0800000000000000
+      internalID: -64067142509613789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_56
+      rect:
+        serializedVersion: 2
+        x: 7195
+        y: 111
+        width: 74
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dd576b2cc3905f60800000000000000
+      internalID: 8021073441457659346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_57
+      rect:
+        serializedVersion: 2
+        x: 7323
+        y: 111
+        width: 74
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21423f6171fb6fe90800000000000000
+      internalID: -6992191265555930094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_58
+      rect:
+        serializedVersion: 2
+        x: 7451
+        y: 113
+        width: 74
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41ef3ef266ddf0940800000000000000
+      internalID: 5264669920379272724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_59
+      rect:
+        serializedVersion: 2
+        x: 7579
+        y: 115
+        width: 74
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 753d8545acbddde70800000000000000
+      internalID: 9141704480676959063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_60
+      rect:
+        serializedVersion: 2
+        x: 7707
+        y: 117
+        width: 74
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 792e092d972d1a460800000000000000
+      internalID: 7251308295708795543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_61
+      rect:
+        serializedVersion: 2
+        x: 7835
+        y: 119
+        width: 74
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 793e73d25d1a1ac30800000000000000
+      internalID: 4368951050484835223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_62
+      rect:
+        serializedVersion: 2
+        x: 7963
+        y: 121
+        width: 74
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 533cf13272d3af0e0800000000000000
+      internalID: -2235407026733726923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_63
+      rect:
+        serializedVersion: 2
+        x: 8091
+        y: 123
+        width: 202
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21502da6badd5ebb0800000000000000
+      internalID: -4907272490648992494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_64
+      rect:
+        serializedVersion: 2
+        x: 8475
+        y: 108
+        width: 74
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdba5454d7f9b7860800000000000000
+      internalID: 7528786562461838303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_65
+      rect:
+        serializedVersion: 2
+        x: 8603
+        y: 85
+        width: 74
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7e3ab15190eebb90800000000000000
+      internalID: -7224089837509656964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_66
+      rect:
+        serializedVersion: 2
+        x: 8731
+        y: 64
+        width: 74
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb9c346984d5b63c0800000000000000
+      internalID: -4365292847465510468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Metal_Crusher_WIP_67
+      rect:
+        serializedVersion: 2
+        x: 8859
+        y: 46
+        width: 74
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93200c0d9d5c18b10800000000000000
+      internalID: 1982082850320548409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Metal_Crusher_WIP_0: -8091058470843298460
+      Metal_Crusher_WIP_1: -5830763089788558205
+      Metal_Crusher_WIP_10: -8100858107106280777
+      Metal_Crusher_WIP_11: 4981661185175660944
+      Metal_Crusher_WIP_12: -5499263325778078795
+      Metal_Crusher_WIP_13: -5915087604771827015
+      Metal_Crusher_WIP_14: -2426746330174820793
+      Metal_Crusher_WIP_15: 9113321167188629812
+      Metal_Crusher_WIP_16: -4130623687916294759
+      Metal_Crusher_WIP_17: -2488978069592675184
+      Metal_Crusher_WIP_18: -6921879130565536509
+      Metal_Crusher_WIP_19: 4891817176087818396
+      Metal_Crusher_WIP_2: -8768590319748041477
+      Metal_Crusher_WIP_20: 6364371008107972234
+      Metal_Crusher_WIP_21: -124389211864699584
+      Metal_Crusher_WIP_22: 8417620589470589750
+      Metal_Crusher_WIP_23: 6537322783190465797
+      Metal_Crusher_WIP_24: -3026426485356960504
+      Metal_Crusher_WIP_25: -3334187858536169351
+      Metal_Crusher_WIP_26: -8902735027634329445
+      Metal_Crusher_WIP_27: 1511182533251979158
+      Metal_Crusher_WIP_28: 2666296642342092875
+      Metal_Crusher_WIP_29: 5382391499142748512
+      Metal_Crusher_WIP_3: -514561664691176715
+      Metal_Crusher_WIP_30: -602541686313869919
+      Metal_Crusher_WIP_31: -3949237204735798742
+      Metal_Crusher_WIP_32: -8422255109966993316
+      Metal_Crusher_WIP_33: -7559429502583213090
+      Metal_Crusher_WIP_34: -848465668275246175
+      Metal_Crusher_WIP_35: 6430414194285593360
+      Metal_Crusher_WIP_36: -1034470572409335620
+      Metal_Crusher_WIP_37: 7412426946786402398
+      Metal_Crusher_WIP_38: -1016017223074256385
+      Metal_Crusher_WIP_39: -8659220303240992662
+      Metal_Crusher_WIP_4: 3092069329068371505
+      Metal_Crusher_WIP_40: -2628103308446207230
+      Metal_Crusher_WIP_41: -1318329737361673484
+      Metal_Crusher_WIP_42: -6577532687621471716
+      Metal_Crusher_WIP_43: 7227092661394162684
+      Metal_Crusher_WIP_44: -790818265205767014
+      Metal_Crusher_WIP_45: 2804217219840039494
+      Metal_Crusher_WIP_46: 4731343521108837639
+      Metal_Crusher_WIP_47: -529142331152276463
+      Metal_Crusher_WIP_48: -1324285926797101548
+      Metal_Crusher_WIP_49: 7188766280510323613
+      Metal_Crusher_WIP_5: 5337816686559736530
+      Metal_Crusher_WIP_50: -5440605531031124160
+      Metal_Crusher_WIP_51: -3995949619791720506
+      Metal_Crusher_WIP_52: 6335771251531206438
+      Metal_Crusher_WIP_53: 5154481470618535031
+      Metal_Crusher_WIP_54: -2909891756402913831
+      Metal_Crusher_WIP_55: -64067142509613789
+      Metal_Crusher_WIP_56: 8021073441457659346
+      Metal_Crusher_WIP_57: -6992191265555930094
+      Metal_Crusher_WIP_58: 5264669920379272724
+      Metal_Crusher_WIP_59: 9141704480676959063
+      Metal_Crusher_WIP_6: -6043740103085262129
+      Metal_Crusher_WIP_60: 7251308295708795543
+      Metal_Crusher_WIP_61: 4368951050484835223
+      Metal_Crusher_WIP_62: -2235407026733726923
+      Metal_Crusher_WIP_63: -4907272490648992494
+      Metal_Crusher_WIP_64: 7528786562461838303
+      Metal_Crusher_WIP_65: -7224089837509656964
+      Metal_Crusher_WIP_66: -4365292847465510468
+      Metal_Crusher_WIP_67: 1982082850320548409
+      Metal_Crusher_WIP_7: -4027810457396640924
+      Metal_Crusher_WIP_8: 92348283708517564
+      Metal_Crusher_WIP_9: 1789956273161917581
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

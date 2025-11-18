@@ -437,7 +437,6 @@ public class PlayerController : MonoBehaviour
         if (other.transform.tag == "MovingPlatform")
         {
             transform.parent = other.transform;
-            Debug.Log("Colliding");
         }
     }
 
@@ -446,7 +445,6 @@ public class PlayerController : MonoBehaviour
         if (other.transform.tag == "MovingPlatform")
         {
             transform.parent = null;
-            Debug.Log("No longer colliding");
         }
     }
     
