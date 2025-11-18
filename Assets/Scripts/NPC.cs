@@ -13,6 +13,8 @@ public class NPC : MonoBehaviour
 
     public float wordSpeed;
     public bool playerIsClose;
+    public GameObject contButton;
+    private bool isTyping = false;
 
 
     void Start()
@@ -40,6 +42,12 @@ public class NPC : MonoBehaviour
         {
             RemoveText();
         }
+
+        if (dialogueText.text == dialogue[index])
+        {
+            contButton.SetActive(true);
+        }
+
     }
 
     public void RemoveText()
@@ -47,19 +55,26 @@ public class NPC : MonoBehaviour
         dialogueText.text = "";
         index = 0;
         dialoguePanel.SetActive(false);
+        isTyping = false;
     }
 
     IEnumerator Typing()
     {
+        isTyping = true;
         foreach (char letter in dialogue[index].ToCharArray())
         {
+            if (!isTyping) yield break;
             dialogueText.text += letter;
             yield return new WaitForSeconds(wordSpeed);
         }
+        isTyping = false;
     }
 
     public void NextLine()
     {
+
+        contButton.SetActive(false);
+
         if (index < dialogue.Length - 1)
         {
             index++;
