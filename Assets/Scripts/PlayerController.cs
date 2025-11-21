@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float walkSpeed = 4f;
     public float crouchSpeed = 2f;
-    public float carryingSpeedMultiplier = 1f;
+    public float carryingSpeedMultiplier = 0.7f;
     public float jumpForce = 8f;
     public float airAcceleration = 50f;
     public float fastFallForce = 15f;
@@ -25,39 +25,6 @@ public class PlayerController : MonoBehaviour
     
     [Header("Animation")]
     public Animator animator;
-    
-    [Header("Collider Settings")]
-    [Header("Normal State - Right")]
-    public Vector2 normalColliderSizeRight = new Vector2(0.17f, 0.47f);
-    public Vector2 normalColliderOffsetRight = new Vector2(-0.015f, 0.005f);
-    
-    [Header("Normal State - Left")]
-    public Vector2 normalColliderSizeLeft = new Vector2(0.17f, 0.47f);
-    public Vector2 normalColliderOffsetLeft = new Vector2(0.015f, 0.005f);
-    
-    [Header("Crouch State - Right")]
-    public Vector2 crouchColliderSizeRight = new Vector2(0.17f, 0.47f);
-    public Vector2 crouchColliderOffsetRight = new Vector2(0.015f, 0.005f);
-    
-    [Header("Crouch State - Left")]
-    public Vector2 crouchColliderSizeLeft = new Vector2(0.17f, 0.47f);
-    public Vector2 crouchColliderOffsetLeft = new Vector2(0.015f, 0.005f);
-    
-    [Header("Carrying State - Right")]
-    public Vector2 carryingColliderSizeRight = new Vector2(0.17f, 0.47f);
-    public Vector2 carryingColliderOffsetRight = new Vector2(0.015f, 0.005f);
-    
-    [Header("Carrying State - Left")]
-    public Vector2 carryingColliderSizeLeft = new Vector2(0.17f, 0.47f);
-    public Vector2 carryingColliderOffsetLeft = new Vector2(0.015f, 0.005f);
-    
-    [Header("Crouch + Carrying State - Right")]
-    public Vector2 crouchCarryingColliderSizeRight = new Vector2(0.17f, 0.47f);
-    public Vector2 crouchCarryingColliderOffsetRight = new Vector2(0.015f, 0.005f);
-    
-    [Header("Crouch + Carrying State - Left")]
-    public Vector2 crouchCarryingColliderSizeLeft = new Vector2(0.17f, 0.47f);
-    public Vector2 crouchCarryingColliderOffsetLeft = new Vector2(0.015f, 0.005f);
     
     [Header("Interaction")]
     public float interactionRange = 0.75f;
@@ -77,12 +44,20 @@ public class PlayerController : MonoBehaviour
     private InteractableEffects currentlyGrabbing;
     private bool carryingOnRightSide = true;
     private bool wasCrouching = false;
-    private bool wasCarrying = false;
     private bool wasFacingRight = true;
     
     private const string ANIM_X = "x";
     private const string ANIM_IS_CROUCHING = "isCrouching";
     private const string ANIM_IS_CARRYING = "isCarrying";
+    
+    // Collider constants
+    private static readonly Vector2 NORMAL_SIZE = new Vector2(0.17f, 0.44f);
+    private static readonly Vector2 CROUCH_SIZE = new Vector2(0.17f, 0.39f);
+    private const float OFFSET_Y_NORMAL = -0.01f;
+    private const float OFFSET_Y_CROUCH_RIGHT = -0.035f;
+    private const float OFFSET_Y_CROUCH_LEFT = -0.035f;
+    private const float OFFSET_X_RIGHT = -0.005f;
+    private const float OFFSET_X_LEFT = 0.015f;
     
     void Start()
     {
@@ -126,7 +101,7 @@ public class PlayerController : MonoBehaviour
 
         jumpBufferCounter -= Time.fixedDeltaTime;
 
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching)
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching && currentlyGrabbing == null)
         {
             Jump();
             jumpBufferCounter = 0f;
@@ -152,8 +127,6 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if (currentlyGrabbing != null) return;
-        
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         coyoteTimeCounter = 0f;
@@ -162,14 +135,7 @@ public class PlayerController : MonoBehaviour
     
     void HandleCrouching()
     {
-        if (crouchHeld && isGrounded)
-        {
-            isCrouching = true;
-        }
-        else
-        {
-            isCrouching = false;
-        }
+        isCrouching = crouchHeld && isGrounded;
         
         if (crouchHeld)
         {
@@ -221,92 +187,61 @@ public class PlayerController : MonoBehaviour
     {
         if (animator == null) return;
         
-        // Set x value for blend tree (-1 left, 0 idle, 1 right)
+        bool isCarrying = currentlyGrabbing != null;
+        bool isMoving = Mathf.Abs(horizontalInput) > 0.01f;
+        
         float xValue;
-        if (Mathf.Abs(horizontalInput) > 0.01f)
+        if (isCarrying)
         {
-            // Moving - use full value
-            xValue = horizontalInput > 0 ? 1f : -1f;
+            isFacingRight = carryingOnRightSide;
+            xValue = isMoving ? (carryingOnRightSide ? 1f : -1f) : (carryingOnRightSide ? 0.01f : -0.01f);
         }
         else
         {
-            // Idle - use small value based on facing direction to pick correct idle
-            xValue = isFacingRight ? 0.01f : -0.01f;
+            xValue = isMoving ? (horizontalInput > 0 ? 1f : -1f) : (isFacingRight ? 0.01f : -0.01f);
         }
         
         animator.SetFloat(ANIM_X, xValue);
-        animator.SetBool(ANIM_IS_CROUCHING, isCrouching);
-        animator.SetBool(ANIM_IS_CARRYING, currentlyGrabbing != null);
+        animator.SetBool(ANIM_IS_CROUCHING, crouchHeld);
+        animator.SetBool(ANIM_IS_CARRYING, isCarrying);
+        
+        float animSpeed = 1f;
+        if (isMoving)
+        {
+            float currentSpeed = isCarrying ? walkSpeed * carryingSpeedMultiplier : walkSpeed;
+            float velocityRatio = Mathf.Abs(rb.linearVelocity.x) / currentSpeed;
+            animSpeed = Mathf.Clamp(velocityRatio, 0.5f, 1.5f);
+        }
+        else if (isCarrying)
+        {
+            animSpeed = carryingSpeedMultiplier;
+        }
+        
+        animator.speed = animSpeed;
     }
 
     void UpdateCollider()
     {
         if (boxCollider == null) return;
         
-        bool isCarrying = currentlyGrabbing != null;
-        
-        // Only update if state changed
-        if (wasCrouching != isCrouching || wasCarrying != isCarrying || wasFacingRight != isFacingRight)
+        // Only update if crouch or facing direction changed
+        if (wasCrouching != isCrouching || wasFacingRight != isFacingRight)
         {
-            if (isCrouching && isCarrying)
+            float offsetX = isFacingRight ? OFFSET_X_RIGHT : OFFSET_X_LEFT;
+            
+            if (isCrouching)
             {
-                // Crouch + Carrying
-                if (isFacingRight)
-                {
-                    boxCollider.size = crouchCarryingColliderSizeRight;
-                    boxCollider.offset = crouchCarryingColliderOffsetRight;
-                }
-                else
-                {
-                    boxCollider.size = crouchCarryingColliderSizeLeft;
-                    boxCollider.offset = crouchCarryingColliderOffsetLeft;
-                }
-            }
-            else if (isCrouching)
-            {
-                // Just Crouch
-                if (isFacingRight)
-                {
-                    boxCollider.size = crouchColliderSizeRight;
-                    boxCollider.offset = crouchColliderOffsetRight;
-                }
-                else
-                {
-                    boxCollider.size = crouchColliderSizeLeft;
-                    boxCollider.offset = crouchColliderOffsetLeft;
-                }
-            }
-            else if (isCarrying)
-            {
-                // Just Carrying
-                if (isFacingRight)
-                {
-                    boxCollider.size = carryingColliderSizeRight;
-                    boxCollider.offset = carryingColliderOffsetRight;
-                }
-                else
-                {
-                    boxCollider.size = carryingColliderSizeLeft;
-                    boxCollider.offset = carryingColliderOffsetLeft;
-                }
+                boxCollider.size = CROUCH_SIZE;
+                float offsetY = isFacingRight ? OFFSET_Y_CROUCH_RIGHT : OFFSET_Y_CROUCH_LEFT;
+                boxCollider.offset = new Vector2(offsetX, offsetY);
             }
             else
             {
-                // Normal
-                if (isFacingRight)
-                {
-                    boxCollider.size = normalColliderSizeRight;
-                    boxCollider.offset = normalColliderOffsetRight;
-                }
-                else
-                {
-                    boxCollider.size = normalColliderSizeLeft;
-                    boxCollider.offset = normalColliderOffsetLeft;
-                }
+                boxCollider.size = NORMAL_SIZE;
+                boxCollider.offset = new Vector2(offsetX, OFFSET_Y_NORMAL);
             }
             
             wasCrouching = isCrouching;
-            wasCarrying = isCarrying;
             wasFacingRight = isFacingRight;
         }
     }
@@ -314,15 +249,17 @@ public class PlayerController : MonoBehaviour
 
     void UpdateSpriteDirection()
     {
-        if (currentlyGrabbing != null) return;
-        
-        if (horizontalInput > 0)
+        // Only update facing direction when not carrying
+        if (currentlyGrabbing == null)
         {
-            isFacingRight = true;
-        }
-        else if (horizontalInput < 0)
-        {
-            isFacingRight = false;
+            if (horizontalInput > 0)
+            {
+                isFacingRight = true;
+            }
+            else if (horizontalInput < 0)
+            {
+                isFacingRight = false;
+            }
         }
     }
     
@@ -378,8 +315,6 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (currentlyGrabbing != null) return;
-        
         if (context.performed)
         {
             jumpBufferCounter = jumpBufferTime;
