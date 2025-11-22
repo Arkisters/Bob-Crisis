@@ -187,59 +187,75 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     }
 
 
-    public void StartGrab(PlayerController player)
+    public bool StartGrab(PlayerController player)
     {
-        if (!enableGrabbing || isBeingGrabbed || objectRigidbody == null) return;
+        if (!enableGrabbing || isBeingGrabbed || objectRigidbody == null) return false;
         
-        isBeingGrabbed = true;
-        grabbingPlayer = player;
-        
-        carriedClone = new GameObject(gameObject.name + "_Carried");
-        carriedClone.transform.SetParent(player.transform);
-        
-        SpriteRenderer cloneSpriteRenderer = carriedClone.AddComponent<SpriteRenderer>();
-        SpriteRenderer originalSpriteRenderer = GetComponent<SpriteRenderer>();
-        if (originalSpriteRenderer != null)
+        try
         {
-            cloneSpriteRenderer.sprite = originalSpriteRenderer.sprite;
-            cloneSpriteRenderer.color = originalSpriteRenderer.color;
-            cloneSpriteRenderer.sortingLayerName = originalSpriteRenderer.sortingLayerName;
-            cloneSpriteRenderer.sortingOrder = originalSpriteRenderer.sortingOrder;
+            carriedClone = new GameObject(gameObject.name + "_Carried");
+            carriedClone.transform.SetParent(player.transform);
+            
+            SpriteRenderer cloneSpriteRenderer = carriedClone.AddComponent<SpriteRenderer>();
+            SpriteRenderer originalSpriteRenderer = GetComponent<SpriteRenderer>();
+            if (originalSpriteRenderer != null)
+            {
+                cloneSpriteRenderer.sprite = originalSpriteRenderer.sprite;
+                cloneSpriteRenderer.color = originalSpriteRenderer.color;
+                cloneSpriteRenderer.sortingLayerName = originalSpriteRenderer.sortingLayerName;
+                cloneSpriteRenderer.sortingOrder = originalSpriteRenderer.sortingOrder;
+            }
+            
+            Vector3 worldScale = transform.lossyScale;
+            Vector3 parentScale = player.transform.lossyScale;
+            carriedClone.transform.localScale = new Vector3(
+                worldScale.x / parentScale.x,
+                worldScale.y / parentScale.y,
+                worldScale.z / parentScale.z
+            );
+            
+            BoxCollider2D originalBoxCollider = GetComponent<BoxCollider2D>();
+            if (originalBoxCollider != null)
+            {
+                BoxCollider2D cloneCollider = carriedClone.AddComponent<BoxCollider2D>();
+                cloneCollider.size = originalBoxCollider.size;
+                cloneCollider.offset = originalBoxCollider.offset;
+                cloneCollider.sharedMaterial = zeroFrictionMaterial;
+            }
+            
+            CircleCollider2D originalCircleCollider = GetComponent<CircleCollider2D>();
+            if (originalCircleCollider != null)
+            {
+                CircleCollider2D cloneCollider = carriedClone.AddComponent<CircleCollider2D>();
+                cloneCollider.radius = originalCircleCollider.radius;
+                cloneCollider.offset = originalCircleCollider.offset;
+                cloneCollider.sharedMaterial = zeroFrictionMaterial;
+            }
+            
+            carriedClone.transform.position = transform.position;
+            Quaternion startRotation = transform.rotation;
+            carriedClone.transform.rotation = startRotation;
+            
+            player.StartCoroutine(player.AnimatePickup(carriedClone, this, pickupSpeed, startRotation));
+            
+            gameObject.SetActive(false);
+            
+            isBeingGrabbed = true;
+            grabbingPlayer = player;
+            
+            return true;
         }
-        
-        Vector3 worldScale = transform.lossyScale;
-        Vector3 parentScale = player.transform.lossyScale;
-        carriedClone.transform.localScale = new Vector3(
-            worldScale.x / parentScale.x,
-            worldScale.y / parentScale.y,
-            worldScale.z / parentScale.z
-        );
-        
-        BoxCollider2D originalBoxCollider = GetComponent<BoxCollider2D>();
-        if (originalBoxCollider != null)
+        catch (System.Exception e)
         {
-            BoxCollider2D cloneCollider = carriedClone.AddComponent<BoxCollider2D>();
-            cloneCollider.size = originalBoxCollider.size;
-            cloneCollider.offset = originalBoxCollider.offset;
-            cloneCollider.sharedMaterial = zeroFrictionMaterial;
+            Debug.LogError($"Failed to grab {gameObject.name}: {e.Message}");
+            if (carriedClone != null)
+            {
+                Destroy(carriedClone);
+                carriedClone = null;
+            }
+            gameObject.SetActive(true);
+            return false;
         }
-        
-        CircleCollider2D originalCircleCollider = GetComponent<CircleCollider2D>();
-        if (originalCircleCollider != null)
-        {
-            CircleCollider2D cloneCollider = carriedClone.AddComponent<CircleCollider2D>();
-            cloneCollider.radius = originalCircleCollider.radius;
-            cloneCollider.offset = originalCircleCollider.offset;
-            cloneCollider.sharedMaterial = zeroFrictionMaterial;
-        }
-        
-        carriedClone.transform.position = transform.position;
-        Quaternion startRotation = transform.rotation;
-        carriedClone.transform.rotation = startRotation;
-        
-        player.StartCoroutine(player.AnimatePickup(carriedClone, this, pickupSpeed, startRotation));
-        
-        gameObject.SetActive(false);
     }
     
     public float GetHoldDistance(PlayerController player, GameObject clone)
@@ -300,19 +316,18 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         
         isBeingGrabbed = false;
         
-        if (grabbingPlayer != null)
-        {
-            grabbingPlayer.StopAllCoroutines();
-        }
-        
-        grabbingPlayer = null;
-        
         if (carriedClone != null)
         {
             transform.position = carriedClone.transform.position;
             transform.rotation = carriedClone.transform.rotation;
             Destroy(carriedClone);
             carriedClone = null;
+        }
+        
+        if (grabbingPlayer != null)
+        {
+            grabbingPlayer.StopAllCoroutines();
+            grabbingPlayer = null;
         }
         
         gameObject.SetActive(true);
@@ -334,13 +349,9 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         
         if (enableGrabbing) 
         {
-            if (isBeingGrabbed)
+            if (StartGrab(player))
             {
-                StopGrab();
-            }
-            else
-            {
-                StartGrab(player);
+                player.SetGrabbedObject(this);
             }
         }
     }

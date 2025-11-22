@@ -13,8 +13,7 @@ public class PlayerController : MonoBehaviour
     public float fastFallForce = 15f;
 
     [Header("Ground Detection")]
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.1f;
+    public float groundCheckDistance = 0.025f;
     public LayerMask groundLayer;
 
     [Header("Jump Settings")]
@@ -42,7 +41,6 @@ public class PlayerController : MonoBehaviour
     private bool jumpHeld;
     private bool isFacingRight = true;
     private InteractableEffects currentlyGrabbing;
-    private bool carryingOnRightSide = true;
     private bool wasCrouching = false;
     private bool wasFacingRight = true;
     
@@ -73,15 +71,11 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("PlayerController requires a Rigidbody2D component!");
         }
-
-        if (groundCheck == null)
-        {
-            Debug.LogWarning("No ground check transform assigned!");
-        }
     }
     
     void Update()
     {
+        UpdateFacingDirection();
         UpdateAnimations();
         UpdateCollider();
     }
@@ -107,21 +101,47 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
         }
 
-        if (jumpHoldCounter > 0f && jumpHeld && currentlyGrabbing == null)
+        // Always count down jump hold timer
+        if (jumpHoldCounter > 0f)
         {
-            rb.AddForce(Vector2.up * jumpHoldForce, ForceMode2D.Force);
             jumpHoldCounter -= Time.fixedDeltaTime;
+            
+            // Apply jump hold force only when conditions are met
+            if (jumpHeld && currentlyGrabbing == null && rb.linearVelocity.y > 0f)
+            {
+                rb.AddForce(Vector2.up * jumpHoldForce, ForceMode2D.Force);
+            }
         }
 
         HandleCrouching();
         HandleMovement();
-        UpdateSpriteDirection();
+    }
+    
+    void UpdateFacingDirection()
+    {
+        // Only update facing direction when not carrying
+        if (currentlyGrabbing == null && Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            isFacingRight = horizontalInput > 0;
+        }
     }
     
     void CheckGroundStatus()
     {
-        if (groundCheck == null) return;
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        float scaleY = transform.lossyScale.y;
+        float scaleX = transform.lossyScale.x;
+        
+        float bottomY = transform.position.y + (boxCollider.offset.y * scaleY) - (boxCollider.size.y * scaleY / 2f);
+        float halfWidth = (boxCollider.size.x * scaleX) / 2f;
+        float offsetX = boxCollider.offset.x * scaleX;
+        
+        Vector2 leftCorner = new Vector2(transform.position.x + offsetX - halfWidth, bottomY);
+        Vector2 rightCorner = new Vector2(transform.position.x + offsetX + halfWidth, bottomY);
+        
+        bool leftHit = Physics2D.Raycast(leftCorner, Vector2.down, groundCheckDistance, groundLayer);
+        bool rightHit = Physics2D.Raycast(rightCorner, Vector2.down, groundCheckDistance, groundLayer);
+        
+        isGrounded = leftHit || rightHit;
     }
 
 
@@ -172,7 +192,8 @@ public class PlayerController : MonoBehaviour
         {
             if (currentlyGrabbing != null) return;
             
-            float moveForce = horizontalInput * airAcceleration;
+            float airControl = crouchHeld ? airAcceleration * 0.3f : airAcceleration;
+            float moveForce = horizontalInput * airControl;
             rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
             
             float maxAirSpeed = currentSpeed;
@@ -191,14 +212,13 @@ public class PlayerController : MonoBehaviour
         bool isMoving = Mathf.Abs(horizontalInput) > 0.01f;
         
         float xValue;
-        if (isCarrying)
+        if (isMoving)
         {
-            isFacingRight = carryingOnRightSide;
-            xValue = isMoving ? (carryingOnRightSide ? 1f : -1f) : (carryingOnRightSide ? 0.01f : -0.01f);
+            xValue = isFacingRight ? 1f : -1f;
         }
         else
         {
-            xValue = isMoving ? (horizontalInput > 0 ? 1f : -1f) : (isFacingRight ? 0.01f : -0.01f);
+            xValue = isFacingRight ? 0.01f : -0.01f;
         }
         
         animator.SetFloat(ANIM_X, xValue);
@@ -247,63 +267,37 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void UpdateSpriteDirection()
-    {
-        // Only update facing direction when not carrying
-        if (currentlyGrabbing == null)
-        {
-            if (horizontalInput > 0)
-            {
-                isFacingRight = true;
-            }
-            else if (horizontalInput < 0)
-            {
-                isFacingRight = false;
-            }
-        }
-    }
     
     void TryInteract()
     {
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, interactionRange, interactableLayer);
+        if (boxCollider == null) return;
         
-        foreach (Collider2D collider in hitColliders)
+        Vector2 castDirection = isFacingRight ? Vector2.right : Vector2.left;
+        Vector2 castOrigin = (Vector2)transform.position;
+        Vector2 boxSize = new Vector2(0.1f, boxCollider.bounds.size.y * 0.8f);
+        
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(castOrigin, boxSize, 0f, castDirection, interactionRange, interactableLayer);
+        
+        if (hits.Length == 0) return;
+        
+        // Sort by distance to get closest object
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+        
+        foreach (RaycastHit2D hit in hits)
         {
-            Vector3 directionToObject = (collider.transform.position - transform.position).normalized;
-            bool objectInFrontOfPlayer = (isFacingRight && directionToObject.x > 0) || (!isFacingRight && directionToObject.x < 0);
-            
-            if (!objectInFrontOfPlayer) continue;
-            
-            IInteractable interactable = collider.GetComponent<IInteractable>();
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
                 interactable.Interact(this);
-                
-                InteractableEffects effects = collider.GetComponent<InteractableEffects>();
-                if (effects != null && effects.enableGrabbing)
-                {
-                    if (effects.IsBeingGrabbed())
-                    {
-                        currentlyGrabbing = effects;
-                    }
-                    else if (currentlyGrabbing == effects)
-                    {
-                        currentlyGrabbing = null;
-                    }
-                }
                 break;
             }
         }
     }
 
 
-    public void ReleaseGrabbedObject()
+    public void SetGrabbedObject(InteractableEffects obj)
     {
-        if (currentlyGrabbing != null)
-        {
-            currentlyGrabbing.StopGrab();
-            currentlyGrabbing = null;
-        }
+        currentlyGrabbing = obj;
     }
 
 
@@ -338,9 +332,12 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
+            if (jumpHoldCounter > 0f) return;
+            
             if (currentlyGrabbing != null)
             {
-                ReleaseGrabbedObject();
+                currentlyGrabbing.StopGrab();
+                currentlyGrabbing = null;
             }
             else
             {
@@ -358,14 +355,38 @@ public class PlayerController : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        if (groundCheck != null)
+        if (boxCollider != null)
         {
+            float scaleY = transform.lossyScale.y;
+            float scaleX = transform.lossyScale.x;
+            
+            float bottomY = transform.position.y + (boxCollider.offset.y * scaleY) - (boxCollider.size.y * scaleY / 2f);
+            float halfWidth = (boxCollider.size.x * scaleX) / 2f;
+            float offsetX = boxCollider.offset.x * scaleX;
+            
+            Vector2 leftCorner = new Vector2(transform.position.x + offsetX - halfWidth, bottomY);
+            Vector2 rightCorner = new Vector2(transform.position.x + offsetX + halfWidth, bottomY);
+            
+            Vector2 leftEnd = leftCorner + Vector2.down * groundCheckDistance;
+            Vector2 rightEnd = rightCorner + Vector2.down * groundCheckDistance;
+            
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            Gizmos.DrawLine(leftCorner, leftEnd);
+            Gizmos.DrawLine(rightCorner, rightEnd);
+            Gizmos.DrawWireSphere(leftCorner, 0.02f);
+            Gizmos.DrawWireSphere(rightCorner, 0.02f);
+            Gizmos.DrawWireSphere(leftEnd, 0.02f);
+            Gizmos.DrawWireSphere(rightEnd, 0.02f);
         }
         
+        // Interaction box cast visualization
+        Vector2 castDirection = isFacingRight ? Vector2.right : Vector2.left;
+        Vector2 castOrigin = (Vector2)transform.position;
+        Vector2 boxSize = new Vector2(0.1f, boxCollider != null ? boxCollider.bounds.size.y * 0.8f : 1f);
+        
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, interactionRange);
+        Vector3 boxCenter = castOrigin + castDirection * (interactionRange * 0.5f);
+        Gizmos.DrawWireCube(boxCenter, new Vector3(interactionRange, boxSize.y, 0));
     }
     void OnCollisionEnter2D(Collision2D other)
     {
@@ -385,17 +406,18 @@ public class PlayerController : MonoBehaviour
     
     public IEnumerator AnimatePickup(GameObject clone, InteractableEffects interactableEffects, float pickupSpeed, Quaternion startRotation)
     {
-        float objectSide = clone.transform.position.x - transform.position.x;
-        bool objectOnRightSide = objectSide > 0;
-        carryingOnRightSide = objectOnRightSide;
-        
+        // Determine which side the object is on and lock facing direction
+        bool objectOnRightSide = clone.transform.position.x > transform.position.x;
         isFacingRight = objectOnRightSide;
         
         while (true)
         {
+            // Recalculate which side based on current position each frame
+            bool currentlyOnRight = clone.transform.position.x > transform.position.x;
+            float direction = currentlyOnRight ? 1f : -1f;
+            
             float holdDistance = interactableEffects.GetHoldDistance(this, clone);
             float holdHeight = interactableEffects.GetHoldHeight(this, clone);
-            float direction = objectOnRightSide ? 1f : -1f;
             Vector3 localTargetPosition = new Vector3(direction * holdDistance, holdHeight, 0);
             Vector3 worldTargetPosition = transform.TransformPoint(localTargetPosition);
             
