@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
     private InteractableEffects currentlyGrabbing;
     private bool wasCrouching = false;
     private bool wasFacingRight = true;
+    private MovingPlatforms currentPlatform;
+    private Vector3 platformVelocity;
     
     private const string ANIM_X = "x";
     private const string ANIM_IS_CROUCHING = "isCrouching";
@@ -138,19 +140,58 @@ public class PlayerController : MonoBehaviour
         Vector2 leftCorner = new Vector2(transform.position.x + offsetX - halfWidth, bottomY);
         Vector2 rightCorner = new Vector2(transform.position.x + offsetX + halfWidth, bottomY);
         
-        bool leftHit = Physics2D.Raycast(leftCorner, Vector2.down, groundCheckDistance, groundLayer);
-        bool rightHit = Physics2D.Raycast(rightCorner, Vector2.down, groundCheckDistance, groundLayer);
+        RaycastHit2D leftHit = Physics2D.Raycast(leftCorner, Vector2.down, groundCheckDistance, groundLayer);
+        RaycastHit2D rightHit = Physics2D.Raycast(rightCorner, Vector2.down, groundCheckDistance, groundLayer);
         
         isGrounded = leftHit || rightHit;
+        
+        // Check if standing on a moving platform
+        MovingPlatforms newPlatform = null;
+        if (leftHit.collider != null)
+        {
+            newPlatform = leftHit.collider.GetComponent<MovingPlatforms>();
+        }
+        if (newPlatform == null && rightHit.collider != null)
+        {
+            newPlatform = rightHit.collider.GetComponent<MovingPlatforms>();
+        }
+        
+        // Update platform and velocity
+        if (newPlatform != null && isGrounded)
+        {
+            currentPlatform = newPlatform;
+            platformVelocity = currentPlatform.GetVelocity();
+        }
+        else
+        {
+            currentPlatform = null;
+            platformVelocity = Vector3.zero;
+        }
     }
 
 
     void Jump()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        // Transfer platform velocity on jump
+        Vector2 finalVelocity = rb.linearVelocity;
+        if (currentPlatform != null)
+        {
+            finalVelocity.x += platformVelocity.x;
+            finalVelocity.y = platformVelocity.y;
+        }
+        else
+        {
+            finalVelocity.y = 0f;
+        }
+        
+        rb.linearVelocity = finalVelocity;
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         coyoteTimeCounter = 0f;
         jumpHoldCounter = jumpHoldTime;
+        
+        // Clear platform reference when jumping off
+        currentPlatform = null;
+        platformVelocity = Vector3.zero;
     }
     
     void HandleCrouching()
@@ -186,7 +227,18 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded)
         {
-            rb.linearVelocity = new Vector2(horizontalInput * currentSpeed, rb.linearVelocity.y);
+            // Apply player movement
+            float playerVelocityX = horizontalInput * currentSpeed;
+            
+            // Add platform velocity if on a platform
+            if (currentPlatform != null)
+            {
+                rb.linearVelocity = new Vector2(playerVelocityX + platformVelocity.x, rb.linearVelocity.y);
+            }
+            else
+            {
+                rb.linearVelocity = new Vector2(playerVelocityX, rb.linearVelocity.y);
+            }
         }
         else
         {
@@ -388,22 +440,6 @@ public class PlayerController : MonoBehaviour
         Vector3 boxCenter = castOrigin + castDirection * (interactionRange * 0.5f);
         Gizmos.DrawWireCube(boxCenter, new Vector3(interactionRange, boxSize.y, 0));
     }
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.transform.tag == "MovingPlatform")
-        {
-            transform.parent = other.transform;
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D other)
-    {
-        if (other.transform.tag == "MovingPlatform")
-        {
-            transform.parent = null;
-        }
-    }
-    
     public IEnumerator AnimatePickup(GameObject clone, InteractableEffects interactableEffects, float pickupSpeed, Quaternion startRotation)
     {
         // Determine which side the object is on and lock facing direction

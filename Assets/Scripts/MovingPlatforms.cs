@@ -1,39 +1,53 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class MovingPlatforms : MonoBehaviour
 {
+    public float moveSpeed = 2f;
+    public List<Vector3> waypoints = new List<Vector3>();
+    
+    private int currentWaypointIndex;
+    private Vector3 platformVelocity;
+    private Vector3 startPosition;
 
-    public GameObject platform;
-
-    public float moveSpeed;
-
-    public Transform currentPoint;
-
-    public Transform[] points;
-
-    public int pointSelection;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentPoint = points[pointSelection];
+        if (waypoints.Count > 0)
+        {
+            // Store the first waypoint as start position
+            startPosition = waypoints[0];
+            transform.position = startPosition;
+            currentWaypointIndex = 0;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        platform.transform.position = Vector3.MoveTowards(platform.transform.position, currentPoint.position, Time.deltaTime * moveSpeed);
+        if (waypoints.Count == 0) return;
+        
+        // Store position before moving
+        Vector3 positionBeforeMove = transform.position;
+        
+        // Move platform toward current waypoint
+        Vector3 targetPosition = waypoints[currentWaypointIndex];
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
 
-        if (platform.transform.position == currentPoint.position)
+        // Calculate velocity AFTER moving
+        platformVelocity = (transform.position - positionBeforeMove) / Time.fixedDeltaTime;
+        
+        // Check if reached current waypoint
+        if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
         {
-            pointSelection++;
-
-            if(pointSelection == points.Length)
+            currentWaypointIndex++;
+            if (currentWaypointIndex >= waypoints.Count)
             {
-                pointSelection = 0;
+                currentWaypointIndex = 0;
             }
-
-            currentPoint = points[pointSelection];
         }
+    }
+    
+    public Vector3 GetVelocity()
+    {
+        return platformVelocity;
     }
 }
