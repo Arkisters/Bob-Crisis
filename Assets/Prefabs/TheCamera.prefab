@@ -50,9 +50,13 @@ MonoBehaviour:
   player: {fileID: 0}
   boundsWidth: 2
   boundsHeight: 2
-  verticalSmoothSpeed: 5
-  horizontalTransitionSpeed: 2
-  overshootAmount: 0.1
+  verticalSmoothSpeed: 3
+  fastFallBaseSpeed: 2
+  speedIncreasePerUnit: 0.2
+  fallLookaheadDistance: 5
+  returnToSweetSpotSpeed: 3
+  minFallSpeedForLookahead: 9.5
+  horizontalSmoothSpeed: 2
 --- !u!20 &6086514716929534730
 Camera:
   m_ObjectHideFlags: 0
