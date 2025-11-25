@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
     [Tooltip("Speed when returning to sweet spot after falling stops")]
     public float returnToSweetSpotSpeed = 3f;
     [Tooltip("Minimum fall speed before lookahead kicks in")]
-    public float minFallSpeedForLookahead = 9.5f;
+    public float minFallSpeedForLookahead = 9.2f;
     
     [Header("Horizontal Follow Settings")]
     [Tooltip("Smooth speed for horizontal camera movement")]
