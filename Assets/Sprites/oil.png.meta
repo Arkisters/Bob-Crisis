@@ -1,19 +1,28 @@
 fileFormatVersion: 2
-guid: 9703fa69206c1dd44bb9c619dbeff5d4
+guid: f6d2376bde1812447aa2c770c296284d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 169565496511334732
-    second: incinerators_0
+      213: -5328104982336953044
+    second: oil_0
   - first:
-      213: 289390934142091128
-    second: incinerators_1
+      213: 7776492450180799568
+    second: oil_1
   - first:
-      213: 6439545684531415181
-    second: incinerators_2
+      213: 1334641247048574048
+    second: oil_2
   - first:
-      213: -1918911126703102957
-    second: incinerators_3
+      213: -9199997698424132929
+    second: oil_3
+  - first:
+      213: -7134955415792401692
+    second: oil_4
+  - first:
+      213: -2265604288953831398
+    second: oil_5
+  - first:
+      213: 6925176251070147507
+    second: oil_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,89 +118,155 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: incinerators_0
+      name: oil_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 0
-        width: 98
-        height: 55
+        x: 82
+        y: 158
+        width: 93
+        height: 23
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c4988b1bbea6a5200800000000000000
-      internalID: 169565496511334732
+      spriteID: c2521d18fb4ce06b0800000000000000
+      internalID: -5328104982336953044
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: incinerators_1
+      name: oil_1
       rect:
         serializedVersion: 2
-        x: 122
-        y: 0
-        width: 98
-        height: 56
+        x: 338
+        y: 158
+        width: 93
+        height: 23
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 87ff1c6758f140400800000000000000
-      internalID: 289390934142091128
+      spriteID: 05c988b8ea6abeb60800000000000000
+      internalID: 7776492450180799568
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: incinerators_2
+      name: oil_2
       rect:
         serializedVersion: 2
-        x: 243
-        y: 0
-        width: 98
-        height: 56
+        x: 600
+        y: 158
+        width: 91
+        height: 26
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d8805619eacdd5950800000000000000
-      internalID: 6439545684531415181
+      spriteID: 0642ae89429958210800000000000000
+      internalID: 1334641247048574048
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: incinerators_3
+      name: oil_3
       rect:
         serializedVersion: 2
-        x: 364
-        y: 0
-        width: 98
-        height: 55
+        x: 850
+        y: 158
+        width: 93
+        height: 30
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 31421514f78ae55e0800000000000000
-      internalID: -1918911126703102957
+      spriteID: fbaa40346da035080800000000000000
+      internalID: -9199997698424132929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: oil_4
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 30
+        width: 93
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e2c1791adb8bfc90800000000000000
+      internalID: -7134955415792401692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: oil_5
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 30
+        width: 93
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a103e4327e4fe80e0800000000000000
+      internalID: -2265604288953831398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: oil_6
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 30
+        width: 93
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bbe104fb1b2b1060800000000000000
+      internalID: 6925176251070147507
       vertices: []
       indices: 
       edges: []
@@ -200,7 +275,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3233d8c5aa2f22447813ea8d146d7ba7
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -210,10 +285,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      incinerators_0: 169565496511334732
-      incinerators_1: 289390934142091128
-      incinerators_2: 6439545684531415181
-      incinerators_3: -1918911126703102957
+      oil_0: -5328104982336953044
+      oil_1: 7776492450180799568
+      oil_2: 1334641247048574048
+      oil_3: -9199997698424132929
+      oil_4: -7134955415792401692
+      oil_5: -2265604288953831398
+      oil_6: 6925176251070147507
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
