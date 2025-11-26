@@ -48,14 +48,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  boundsWidth: 2
-  boundsHeight: 2
+  boundsWidth: 6
+  boundsHeight: 4
   verticalSmoothSpeed: 3
   fastFallBaseSpeed: 2
   speedIncreasePerUnit: 0.2
   fallLookaheadDistance: 5
   returnToSweetSpotSpeed: 3
-  minFallSpeedForLookahead: 9.5
+  minFallSpeedForLookahead: 9.2
   horizontalSmoothSpeed: 2
 --- !u!20 &6086514716929534730
 Camera:
@@ -139,8 +139,8 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
