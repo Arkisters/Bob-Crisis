@@ -10,18 +10,20 @@ public class CameraController : MonoBehaviour
     public int boundsHeight = 2;
     
     [Header("Vertical Follow Settings")]
-    [Tooltip("Base smooth speed for vertical camera movement (non-fast-fall situations)")]
+    [Tooltip("Base smooth speed for vertical camera movement")]
     public float verticalSmoothSpeed = 3f;
-    [Tooltip("Base speed when following fast falls (independent of verticalSmoothSpeed)")]
-    public float fastFallBaseSpeed = 2f;
-    [Tooltip("How much speed increases per unit distance below sweet spot center (smooth curve)")]
-    public float speedIncreasePerUnit = 0.2f;
-    [Tooltip("How much further down camera looks when falling (in sprite heights)")]
-    public float fallLookaheadDistance = 5f;
+    [Tooltip("How much speed increases per unit distance below sweet spot (smooth curve)")]
+    public float speedIncreasePerUnit = 0.3f;
     [Tooltip("Speed when returning to sweet spot after falling stops")]
-    public float returnToSweetSpotSpeed = 3f;
-    [Tooltip("Minimum fall speed before lookahead kicks in")]
-    public float minFallSpeedForLookahead = 9.2f;
+    public float returnToSweetSpotSpeed = 2f;
+    
+    [Header("Dynamic Sweet Spot (Fall Response)")]
+    [Tooltip("Minimum downward velocity before sweet spot starts moving up")]
+    public float minVelocityForSweetSpotShift = 5f;
+    [Tooltip("Maximum downward velocity for sweet spot calculation (terminal velocity)")]
+    public float maxDownwardVelocity = 9.6f;
+    [Tooltip("How quickly sweet spot returns to default position when velocity decreases")]
+    public float sweetSpotReturnSpeed = 5f;
     
     [Header("Horizontal Follow Settings")]
     [Tooltip("Smooth speed for horizontal camera movement")]
@@ -32,6 +34,7 @@ public class CameraController : MonoBehaviour
     private float cameraHeight;
     private Vector3 targetPosition;
     private float minX, maxX, minY, maxY;
+    private float currentSweetSpotOffset = 0f;  // Tracks current dynamic sweet spot offset
     
     void Start()
     {
@@ -89,59 +92,60 @@ public class CameraController : MonoBehaviour
         // Camera height = 9 sprites, so each sprite = cameraHeight / 9
         float spriteHeight = cameraHeight / 9f;
         
-        // Calculate vertical zones based on 9-sprite grid relative to CURRENT camera
-        // Comfort zone: sprites 2-5
-        float lowerBound = cameraY - cameraHeight / 2f + spriteHeight * 2f;  // Bottom of 2nd sprite
-        float upperBound = cameraY - cameraHeight / 2f + spriteHeight * 5f;  // Top of 5th sprite
-        float sweetSpotCenter = cameraY - cameraHeight / 2f + spriteHeight * 3f;  // Center of 3rd sprite
-        
-        // Calculate where camera should be to place player at sweet spot (3rd sprite from bottom)
-        float idealCameraY = playerY - spriteHeight * 3f + cameraHeight / 2f;
-        
-        // Determine if player is falling fast
-        bool isFallingFast = playerVelocityY < -minFallSpeedForLookahead;
-        
-        // When falling fast, target position that places player ABOVE sweet spot (e.g., at 4th sprite)
-        float targetCameraY = idealCameraY;
-        if (isFallingFast)
+        // Calculate dynamic sweet spot offset based on downward velocity
+        // At minVelocity (5f): sweet spot barely moves
+        // At maxVelocity (9.6f): sweet spot moves up by 6 sprites (from sprite 3 to sprite 9, mirroring original distance from bottom)
+        float targetSweetSpotOffset = 0f;
+        if (playerVelocityY < -minVelocityForSweetSpotShift)
         {
-            // Place player at 4th sprite instead of 3rd (1 sprite higher)
-            targetCameraY = playerY - spriteHeight * 4f + cameraHeight / 2f;
-            // Then apply lookahead distance on top
-            targetCameraY -= spriteHeight * fallLookaheadDistance;
+            // Normalize velocity between min and max
+            float velocityRange = maxDownwardVelocity - minVelocityForSweetSpotShift;
+            float normalizedVelocity = Mathf.Clamp01((Mathf.Abs(playerVelocityY) - minVelocityForSweetSpotShift) / velocityRange);
+            
+            // At max velocity, sweet spot should be 6 sprites higher (sprite 3 → sprite 9)
+            // This mirrors the original 3 sprite distance from bottom (now 3 sprites from top)
+            targetSweetSpotOffset = normalizedVelocity * spriteHeight * 6f;
         }
         
-        // Calculate speed increase based on distance below sweet spot center
-        // Continuous smooth curve: speed = baseSpeed + (distance * speedIncreasePerUnit)
-        float distanceBelowCenter = Mathf.Max(0, sweetSpotCenter - playerY);
+        // Smoothly interpolate current offset toward target
+        currentSweetSpotOffset = Mathf.Lerp(currentSweetSpotOffset, targetSweetSpotOffset, sweetSpotReturnSpeed * Time.deltaTime);
         
-        // Priority system:
-        // 1. Player above comfort zone → follow upward
-        // 2. Falling fast → apply lookahead (regardless of position in comfort zone)
-        // 3. Player below comfort zone (not falling fast) → catch up
-        // 4. Camera below ideal (player stopped) → return to sweet spot
+        // Apply dynamic offset to sweet spot position (move it UP when falling fast)
+        float dynamicSweetSpotHeight = 3f + (currentSweetSpotOffset / spriteHeight);
         
+        // Calculate vertical zones based on dynamic sweet spot
+        // Comfort zone: 2 sprites below and 2 sprites above dynamic sweet spot
+        float sweetSpotY = cameraY - cameraHeight / 2f + spriteHeight * dynamicSweetSpotHeight;
+        float lowerBound = sweetSpotY - spriteHeight * 1f;  // 1 sprite below sweet spot
+        float upperBound = sweetSpotY + spriteHeight * 2f;  // 2 sprites above sweet spot
+        
+        // Calculate where camera should be to place player at dynamic sweet spot
+        float idealCameraY = playerY - spriteHeight * dynamicSweetSpotHeight + cameraHeight / 2f;
+        
+        // Calculate distance from sweet spot for speed scaling
+        float distanceFromSweetSpot = Mathf.Abs(sweetSpotY - playerY);
+        float distanceBelowSweetSpot = Mathf.Max(0, sweetSpotY - playerY);
+        
+        // Speed increases based on distance below sweet spot
+        // The further below, the faster the camera moves
+        float speedMultiplier = 1f + (distanceBelowSweetSpot * speedIncreasePerUnit);
+        
+        // Movement logic
         if (playerY > upperBound)
         {
-            // Player above comfort zone - follow upward at base speed
-            targetPosition.y = Mathf.Lerp(targetPosition.y, idealCameraY, verticalSmoothSpeed * Time.deltaTime);
-        }
-        else if (isFallingFast)
-        {
-            // Player falling fast - use independent speed control
-            // Speed = baseSpeed + gradual increase based on distance below center
-            float effectiveSpeed = fastFallBaseSpeed + (distanceBelowCenter * speedIncreasePerUnit);
-            targetPosition.y = Mathf.Lerp(targetPosition.y, targetCameraY, effectiveSpeed * Time.deltaTime);
+            // Player above comfort zone - follow upward
+            float effectiveSpeed = verticalSmoothSpeed * speedMultiplier;
+            targetPosition.y = Mathf.Lerp(targetPosition.y, idealCameraY, effectiveSpeed * Time.deltaTime);
         }
         else if (playerY < lowerBound)
         {
-            // Player below comfort zone (and NOT falling fast) - catch up with smooth curve
-            float effectiveSpeed = verticalSmoothSpeed + (distanceBelowCenter * speedIncreasePerUnit);
+            // Player below comfort zone - catch up faster the further they are
+            float effectiveSpeed = verticalSmoothSpeed * speedMultiplier;
             targetPosition.y = Mathf.Lerp(targetPosition.y, idealCameraY, effectiveSpeed * Time.deltaTime);
         }
-        else if (cameraY < idealCameraY - spriteHeight * 0.2f)
+        else if (Mathf.Abs(cameraY - idealCameraY) > spriteHeight * 0.1f)
         {
-            // Player IN comfort zone, NOT falling fast, but camera is below ideal
+            // Player IN comfort zone but camera not quite at ideal position
             // Return to sweet spot smoothly
             targetPosition.y = Mathf.Lerp(targetPosition.y, idealCameraY, returnToSweetSpotSpeed * Time.deltaTime);
         }
@@ -162,51 +166,58 @@ public class CameraController : MonoBehaviour
         // Calculate camera dimensions
         float height = cam.orthographicSize * 2f;
         float width = height * cam.aspect;
+        float spriteHeight = height / 9f;
         
-        // Camera's position is the CENTER of the bottom-left valid camera position
+        // Camera's position is the CENTER of the camera
         Vector3 cameraCenterPos = transform.position;
         
-        // Calculate level bounds (outer rectangle) around all camera positions
+        // Calculate level bounds (outer rectangle) - stays fixed at original position
+        Vector3 startPos = Application.isPlaying ? new Vector3(minX, minY, 0) : cameraCenterPos;
         float totalWidth = width * boundsWidth;
         float totalHeight = height * boundsHeight;
         
-        // The bounds center needs to account for camera being a center point
         Vector3 boundsCenter = new Vector3(
-            cameraCenterPos.x + (totalWidth - width) / 2f,
-            cameraCenterPos.y + (totalHeight - height) / 2f,
+            startPos.x + (totalWidth - width) / 2f,
+            startPos.y + (totalHeight - height) / 2f,
             0
         );
         
-        // Draw camera grid sections
-        Gizmos.color = Color.yellow;
-        for (int x = 0; x < boundsWidth; x++)
+        if (Application.isPlaying)
         {
-            for (int y = 0; y < boundsHeight; y++)
-            {
-                float posX = cameraCenterPos.x + x * width;
-                float posY = cameraCenterPos.y + y * height;
-                
-                Vector3 sectionCenter = new Vector3(posX, posY, 0);
-                Gizmos.DrawWireCube(sectionCenter, new Vector3(width, height, 0));
-                
-                // Draw vertical comfort zone (sprites 2-5 out of 9)
-                Gizmos.color = Color.green;
-                float spriteHeight = height / 9f;
-                float sectionBottom = posY - height / 2f;
-                float comfortZoneBottom = sectionBottom + spriteHeight * 2f; // Top of 2nd sprite
-                float comfortZoneTop = sectionBottom + spriteHeight * 5f;    // Top of 5th sprite
-                
-                Gizmos.DrawLine(new Vector3(posX - width/2f, comfortZoneBottom, 0), 
-                               new Vector3(posX + width/2f, comfortZoneBottom, 0));
-                Gizmos.DrawLine(new Vector3(posX - width/2f, comfortZoneTop, 0), 
-                               new Vector3(posX + width/2f, comfortZoneTop, 0));
-                
-                Gizmos.color = Color.yellow;
-            }
+            // PLAY MODE: Show only current camera position, comfort zone, and fixed outer bounds
+            
+            // Draw current camera section (yellow)
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(cameraCenterPos, new Vector3(width, height, 0));
+            
+            // Draw dynamic comfort zone (green)
+            float dynamicSweetSpotHeight = 3f + (currentSweetSpotOffset / spriteHeight);
+            float sectionBottom = cameraCenterPos.y - height / 2f;
+            float sweetSpotY = sectionBottom + spriteHeight * dynamicSweetSpotHeight;
+            float lowerBound = sweetSpotY - spriteHeight * 1f;
+            float upperBound = sweetSpotY + spriteHeight * 2f;
+            
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(new Vector3(cameraCenterPos.x - width/2f, lowerBound, 0), 
+                           new Vector3(cameraCenterPos.x + width/2f, lowerBound, 0));
+            Gizmos.DrawLine(new Vector3(cameraCenterPos.x - width/2f, upperBound, 0), 
+                           new Vector3(cameraCenterPos.x + width/2f, upperBound, 0));
+            
+            // Draw fixed level bounds (red)
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(boundsCenter, new Vector3(totalWidth, totalHeight, 0));
         }
-        
-        // Draw level bounds (outer rectangle) LAST so it's visible
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(boundsCenter, new Vector3(totalWidth, totalHeight, 0));
+        else
+        {
+            // EDIT MODE: Show only current camera position (yellow) and outer bounds (red)
+            
+            // Draw current camera section (yellow)
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(cameraCenterPos, new Vector3(width, height, 0));
+            
+            // Draw level bounds (red)
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(boundsCenter, new Vector3(totalWidth, totalHeight, 0));
+        }
     }
 }
