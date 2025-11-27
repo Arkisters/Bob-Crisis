@@ -9,7 +9,7 @@ public class Health : MonoBehaviour
     public float maxHealth = 5;
     public int deathTimer = 3;
     public bool takingDamage = false;
-    Vector2 startPos;
+    Vector2 checkpointPos;
 
     private SpriteRenderer Player_0;
 
@@ -23,7 +23,7 @@ public class Health : MonoBehaviour
     {
         health = maxHealth;
 
-        startPos = transform.position; 
+        checkpointPos = transform.position; 
 
     }
 
@@ -39,6 +39,11 @@ public class Health : MonoBehaviour
             Die();
         }
     }
+
+    public void Updatecheckpoint(Vector2 pos)
+    {
+        checkpointPos = pos;
+    }
     
             
 
@@ -51,14 +56,14 @@ public class Health : MonoBehaviour
     {
         Player_0.enabled = false;
         yield return new WaitForSeconds(duration);
-        transform.position = startPos;
+        transform.position = checkpointPos;
         health = maxHealth;
         Player_0.enabled = true;
     }
 
     void Respawn()
     {
-        transform.position = startPos;
+        transform.position = checkpointPos;
 
         health = maxHealth;
     }
