@@ -4795,6 +4795,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character(TaeEdition)
       objectReference: {fileID: 0}
+    - target: {fileID: 1886146070840558356, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.78
