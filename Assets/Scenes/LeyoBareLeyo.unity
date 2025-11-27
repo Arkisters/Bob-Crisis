@@ -4355,6 +4355,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1421131540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+  m_PrefabInstance: {fileID: 1522563611}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1485164591
 GameObject:
   m_ObjectHideFlags: 0
@@ -4507,6 +4512,26 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Props
       objectReference: {fileID: 0}
+    - target: {fileID: 2552891964701348833, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: objectToToggle
+      value: 
+      objectReference: {fileID: 1421131540}
+    - target: {fileID: 2552891964701348833, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: activationTimer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2552891964701348833, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: enableTimedToggle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2552891964701348833, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: enableObjectToggle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2552891964701348833, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: timedObjectsToToggle
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4142082586759253303, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.51
@@ -4563,6 +4588,10 @@ PrefabInstance:
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_Name
       value: Box(testing) (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4142082586759253303, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_LocalPosition.x
