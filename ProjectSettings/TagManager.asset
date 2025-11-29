@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MovingPlatform
   - Props
+  - Box
   layers:
   - Default
   - TransparentFX

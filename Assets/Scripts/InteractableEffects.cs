@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class InteractableEffects : MonoBehaviour, IInteractable
@@ -37,6 +38,11 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     private PlayerController grabbingPlayer;
     private Rigidbody2D objectRigidbody;
     private GameObject carriedClone;
+
+    [Header("Timed Toggle")]
+    public bool enableTimedToggle = false;
+    public float activationTimer;
+    public GameObject timedObjectsToToggle;
 
 
     void Start()
@@ -346,6 +352,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (enableObjectToggle) ToggleObject();
         if (enableMovement) ToggleMove();
         if (enableObjectActivation) ActivateObjects();
+        if (enableTimedToggle) TimedToggle();
         
         if (enableGrabbing) 
         {
@@ -355,4 +362,18 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             }
         }
     }
+
+    public void TimedToggle()
+    {
+        if (!enableTimedToggle || timedObjectsToToggle == null) return;
+        StartCoroutine(DisabledObject(1f));
+    }
+
+    IEnumerator DisabledObject(float duration)
+    {
+        timedObjectsToToggle.SetActive(false);
+        yield return new WaitForSeconds(activationTimer);
+        timedObjectsToToggle.SetActive(true);
+    }
+
 }
