@@ -19,7 +19,7 @@ public class TutorialSolved : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Props") && other.transform.position.x >= 1.42f)
+        if (other.CompareTag("Box") && other.transform.position.x >= 1.42f)
         {
                 puzzleSolved = true;
         }
