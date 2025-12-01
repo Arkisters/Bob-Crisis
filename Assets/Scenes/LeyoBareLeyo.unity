@@ -1668,7 +1668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd80a2c9c0c3238448768c04c24ebfed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
+  damage: 2
   playerHealth: {fileID: 1772363943}
 --- !u!61 &379714351
 BoxCollider2D:
@@ -19841,6 +19841,22 @@ PrefabInstance:
       propertyPath: 'm_Cameras.Array.data[0]'
       value: 
       objectReference: {fileID: 1687794241}
+    - target: {fileID: 6086514716929534730, guid: 3c40e816b13ca9c45b79acd5b13ed53d, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086514716929534730, guid: 3c40e816b13ca9c45b79acd5b13ed53d, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.654902
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086514716929534730, guid: 3c40e816b13ca9c45b79acd5b13ed53d, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.6039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086514716929534730, guid: 3c40e816b13ca9c45b79acd5b13ed53d, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.5764706
+      objectReference: {fileID: 0}
     - target: {fileID: 7807286265723041485, guid: 3c40e816b13ca9c45b79acd5b13ed53d, type: 3}
       propertyPath: player
       value: 
@@ -21335,7 +21351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd80a2c9c0c3238448768c04c24ebfed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
+  damage: 2
   playerHealth: {fileID: 1772363943}
 --- !u!4 &1526172631 stripped
 Transform:
@@ -22365,7 +22381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 35.1
+      value: -6.7
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -22559,11 +22575,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4142082586759253303, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.77
+      value: 8.44
       objectReference: {fileID: 0}
     - target: {fileID: 4142082586759253303, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.15
+      value: -1.71
       objectReference: {fileID: 0}
     - target: {fileID: 4142082586759253303, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -23186,7 +23202,7 @@ Transform:
   m_GameObject: {fileID: 1888464641}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.62, y: -2.65, z: 0}
+  m_LocalPosition: {x: 18.98, y: -12.12, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
