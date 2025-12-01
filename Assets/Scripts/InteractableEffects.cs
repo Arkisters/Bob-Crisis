@@ -44,6 +44,9 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     public float activationTimer;
     public GameObject timedObjectsToToggle;
 
+    [Header("Animate and Kill")]
+    public bool enableAnimateAndKill = false;
+    public GameObject objectToAnimate;
 
     void Start()
     {
@@ -353,7 +356,8 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (enableMovement) ToggleMove();
         if (enableObjectActivation) ActivateObjects();
         if (enableTimedToggle) TimedToggle();
-        
+        if (enableAnimateAndKill) AnimateAndKill();
+
         if (enableGrabbing) 
         {
             if (StartGrab(player))
@@ -376,4 +380,13 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         timedObjectsToToggle.SetActive(true);
     }
 
+    public void AnimateAndKill()
+    {
+        if (!enableAnimateAndKill || objectToAnimate != null)
+        {
+            Animator animator = objectToAnimate.GetComponent<Animator>();
+            animator.SetBool("explode", true);
+            Destroy(gameObject, 1f); // Adjust delay as needed to match animation length
+        }
+    }
 }
