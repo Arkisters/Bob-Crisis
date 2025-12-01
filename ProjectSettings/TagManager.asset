@@ -8,6 +8,7 @@ TagManager:
   - Props
   - Box
   - Ladder
+  - Crusher
   layers:
   - Default
   - TransparentFX

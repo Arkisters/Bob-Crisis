@@ -10,20 +10,26 @@ public class MovingPlatforms : MonoBehaviour
     private Vector3 platformVelocity;
     private Vector3 startPosition;
 
-    void Start()
+    void Awake()
     {
-        if (waypoints.Count > 0)
-        {
-            // Store the first waypoint as start position
+        // Cache the start position immediately (Awake runs even if the object starts disabled).
+        if (waypoints != null && waypoints.Count > 0)
             startPosition = waypoints[0];
-            transform.position = startPosition;
-            currentWaypointIndex = 0;
-        }
+        else
+            startPosition = transform.position;
+    }
+
+    void OnEnable()
+    {
+        // Reset platform state every time the object is enabled.
+        transform.position = startPosition;
+        currentWaypointIndex = 0;
+        platformVelocity = Vector3.zero;
     }
 
     void FixedUpdate()
     {
-        if (waypoints.Count == 0) return;
+        if (waypoints == null || waypoints.Count == 0) return;
         
         // Store position before moving
         Vector3 positionBeforeMove = transform.position;

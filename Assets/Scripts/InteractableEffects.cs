@@ -375,9 +375,9 @@ public class InteractableEffects : MonoBehaviour, IInteractable
 
     IEnumerator DisabledObject(float duration)
     {
-        timedObjectsToToggle.SetActive(false);
+        timedObjectsToToggle.SetActive(!timedObjectsToToggle.activeSelf);
         yield return new WaitForSeconds(activationTimer);
-        timedObjectsToToggle.SetActive(true);
+        timedObjectsToToggle.SetActive(!timedObjectsToToggle.activeSelf);
     }
 
     public void AnimateAndKill()
