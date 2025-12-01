@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Damage : MonoBehaviour
 {
-    public int damage = 1;
+    public float damage = 1f;
     public Health playerHealth;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
