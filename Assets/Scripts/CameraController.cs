@@ -26,8 +26,12 @@ public class CameraController : MonoBehaviour
     public float sweetSpotReturnSpeed = 5f;
     
     [Header("Horizontal Follow Settings")]
-    [Tooltip("Smooth speed for horizontal camera movement")]
+    [Tooltip("Use smooth follow (false) or sectioned camera that snaps to grid positions (true)")]
+    public bool useSectionedCamera = false;
+    [Tooltip("Smooth speed for horizontal camera movement (only used if not sectioned)")]
     public float horizontalSmoothSpeed = 2f;
+    [Tooltip("Speed for transitioning between sections (only used if sectioned)")]
+    public float sectionTransitionSpeed = 5f;
     
     private Camera cam;
     private float cameraWidth;
@@ -35,6 +39,7 @@ public class CameraController : MonoBehaviour
     private Vector3 targetPosition;
     private float minX, maxX, minY, maxY;
     private float currentSweetSpotOffset = 0f;  // Tracks current dynamic sweet spot offset
+    private int currentSectionIndex = 0;  // Tracks which horizontal section we're in
     
     void Start()
     {
@@ -49,6 +54,9 @@ public class CameraController : MonoBehaviour
         
         // Initialize target position to current position (don't move camera)
         targetPosition = transform.position;
+        
+        // Initialize section index based on starting position
+        currentSectionIndex = Mathf.RoundToInt((targetPosition.x - minX) / cameraWidth);
     }
     
     void CalculateBounds()
@@ -77,8 +85,37 @@ public class CameraController : MonoBehaviour
     
     void HandleHorizontalMovement()
     {
-        // Smoothly follow player horizontally
-        targetPosition.x = Mathf.Lerp(targetPosition.x, player.position.x, horizontalSmoothSpeed * Time.deltaTime);
+        if (useSectionedCamera)
+        {
+            // Sectioned camera: Snap to discrete camera sections
+            // Calculate target section position
+            float targetSectionX = minX + (currentSectionIndex * cameraWidth);
+            
+            // Check if player has exited the current section bounds
+            float sectionLeft = targetSectionX - cameraWidth / 2f;
+            float sectionRight = targetSectionX + cameraWidth / 2f;
+            
+            // If player exits left edge, move to previous section
+            if (player.position.x < sectionLeft && currentSectionIndex > 0)
+            {
+                currentSectionIndex--;
+                targetSectionX = minX + (currentSectionIndex * cameraWidth);
+            }
+            // If player exits right edge, move to next section
+            else if (player.position.x > sectionRight && currentSectionIndex < boundsWidth - 1)
+            {
+                currentSectionIndex++;
+                targetSectionX = minX + (currentSectionIndex * cameraWidth);
+            }
+            
+            // Smoothly transition to target section
+            targetPosition.x = Mathf.Lerp(targetPosition.x, targetSectionX, sectionTransitionSpeed * Time.deltaTime);
+        }
+        else
+        {
+            // Smooth follow: Continuously follow player horizontally
+            targetPosition.x = Mathf.Lerp(targetPosition.x, player.position.x, horizontalSmoothSpeed * Time.deltaTime);
+        }
     }
     
     void HandleVerticalMovement()
@@ -214,6 +251,21 @@ public class CameraController : MonoBehaviour
             // Draw current camera section (yellow)
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(cameraCenterPos, new Vector3(width, height, 0));
+            
+            // If sectioned camera is enabled, draw all vertical section dividers
+            if (useSectionedCamera)
+            {
+                Gizmos.color = Color.yellow;
+                // Draw lines at the edges between sections, from bottom to top of level bounds
+                for (int i = 0; i <= boundsWidth; i++)
+                {
+                    // Calculate position at the left edge of each section (which is the right edge of the previous section)
+                    float dividerX = startPos.x + (i * width) - width / 2f;
+                    Vector3 lineTop = new Vector3(dividerX, startPos.y + totalHeight - height / 2f, 0);
+                    Vector3 lineBottom = new Vector3(dividerX, startPos.y - height / 2f, 0);
+                    Gizmos.DrawLine(lineBottom, lineTop);
+                }
+            }
             
             // Draw level bounds (red)
             Gizmos.color = Color.red;
