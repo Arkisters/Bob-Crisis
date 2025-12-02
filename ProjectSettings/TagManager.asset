@@ -9,6 +9,7 @@ TagManager:
   - Box
   - Ladder
   - Crusher
+  - Magnet
   layers:
   - Default
   - TransparentFX
