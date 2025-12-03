@@ -48,6 +48,14 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     public bool enableAnimateAndKill = false;
     public GameObject objectToAnimate;
 
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -251,7 +259,9 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             
             isBeingGrabbed = true;
             grabbingPlayer = player;
-            
+
+            audioManager.PlaySFX(audioManager.BlockGrabFromActiveMagnet);
+
             return true;
         }
         catch (System.Exception e)
