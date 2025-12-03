@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     public float jumpBufferTime = 0.15f;
     public float jumpHoldTime = 0.2f;
     public float jumpHoldForce = 25f;
+    public float carryingJumpMultiplier = 0.75f;
+    
+    [Header("Interaction Settings")]
+    public float interactionBufferTime = 0.15f;
     
     [Header("Animation")]
     public Animator animator;
@@ -36,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private float jumpHoldCounter;
+    private float interactionBufferCounter;
     private float horizontalInput;
     private bool crouchHeld;
     private bool jumpHeld;
@@ -96,8 +101,9 @@ public class PlayerController : MonoBehaviour
         }
 
         jumpBufferCounter -= Time.fixedDeltaTime;
+        interactionBufferCounter -= Time.fixedDeltaTime;
 
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching && currentlyGrabbing == null)
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching)
         {
             Jump();
             jumpBufferCounter = 0f;
@@ -108,10 +114,35 @@ public class PlayerController : MonoBehaviour
         {
             jumpHoldCounter -= Time.fixedDeltaTime;
             
-            // Apply jump hold force only when conditions are met
-            if (jumpHeld && currentlyGrabbing == null && rb.linearVelocity.y > 0f)
+            // Apply jump hold force (reduced when carrying)
+            if (jumpHeld && rb.linearVelocity.y > 0f)
             {
-                rb.AddForce(Vector2.up * jumpHoldForce, ForceMode2D.Force);
+                float holdForce = jumpHoldForce;
+                if (currentlyGrabbing != null)
+                {
+                    holdForce *= carryingJumpMultiplier;
+                }
+                rb.AddForce(Vector2.up * holdForce, ForceMode2D.Force);
+            }
+        }
+        
+        // Handle interaction buffering - try to interact if buffer is active
+        if (interactionBufferCounter > 0f)
+        {
+            bool interacted = TryInteract();
+            if (interacted)
+            {
+                interactionBufferCounter = 0f;
+            }
+        }
+        
+        // Check if grabbed object is still in range
+        if (currentlyGrabbing != null)
+        {
+            if (!IsObjectInRange(currentlyGrabbing.gameObject))
+            {
+                currentlyGrabbing.StopGrab();
+                currentlyGrabbing = null;
             }
         }
 
@@ -185,7 +216,15 @@ public class PlayerController : MonoBehaviour
         }
         
         rb.linearVelocity = finalVelocity;
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        
+        // Reduce jump force when carrying
+        float actualJumpForce = jumpForce;
+        if (currentlyGrabbing != null)
+        {
+            actualJumpForce *= carryingJumpMultiplier;
+        }
+        
+        rb.AddForce(Vector2.up * actualJumpForce, ForceMode2D.Impulse);
         coyoteTimeCounter = 0f;
         jumpHoldCounter = jumpHoldTime;
         
@@ -242,9 +281,14 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (currentlyGrabbing != null) return;
-            
             float airControl = crouchHeld ? airAcceleration * 0.3f : airAcceleration;
+            
+            // Reduce air control when carrying
+            if (currentlyGrabbing != null)
+            {
+                airControl *= carryingSpeedMultiplier;
+            }
+            
             float moveForce = horizontalInput * airControl;
             rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
             
@@ -320,9 +364,9 @@ public class PlayerController : MonoBehaviour
 
 
     
-    void TryInteract()
+    bool TryInteract()
     {
-        if (boxCollider == null) return;
+        if (boxCollider == null) return false;
         
         Vector2 castDirection = isFacingRight ? Vector2.right : Vector2.left;
         Vector2 castOrigin = (Vector2)transform.position;
@@ -330,7 +374,7 @@ public class PlayerController : MonoBehaviour
         
         RaycastHit2D[] hits = Physics2D.BoxCastAll(castOrigin, boxSize, 0f, castDirection, interactionRange, interactableLayer);
         
-        if (hits.Length == 0) return;
+        if (hits.Length == 0) return false;
         
         // Sort by distance to get closest object
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
@@ -341,9 +385,32 @@ public class PlayerController : MonoBehaviour
             if (interactable != null)
             {
                 interactable.Interact(this);
-                break;
+                return true; // Successfully interacted
             }
         }
+        
+        return false;
+    }
+    
+    bool IsObjectInRange(GameObject obj)
+    {
+        if (boxCollider == null || obj == null) return false;
+        
+        Vector2 castDirection = isFacingRight ? Vector2.right : Vector2.left;
+        Vector2 castOrigin = (Vector2)transform.position;
+        Vector2 boxSize = new Vector2(0.1f, boxCollider.bounds.size.y * 0.8f);
+        
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(castOrigin, boxSize, 0f, castDirection, interactionRange, interactableLayer);
+        
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.gameObject == obj)
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 
@@ -393,7 +460,14 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                TryInteract();
+                // Try to interact immediately
+                bool interacted = TryInteract();
+                
+                // If couldn't interact, start buffer to try again
+                if (!interacted)
+                {
+                    interactionBufferCounter = interactionBufferTime;
+                }
             }
         }
     }
@@ -439,34 +513,5 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.yellow;
         Vector3 boxCenter = castOrigin + castDirection * (interactionRange * 0.5f);
         Gizmos.DrawWireCube(boxCenter, new Vector3(interactionRange, boxSize.y, 0));
-    }
-    public IEnumerator AnimatePickup(GameObject clone, InteractableEffects interactableEffects, float pickupSpeed, Quaternion startRotation)
-    {
-        // Determine which side the object is on and lock facing direction
-        bool objectOnRightSide = clone.transform.position.x > transform.position.x;
-        isFacingRight = objectOnRightSide;
-        
-        while (true)
-        {
-            // Recalculate which side based on current position each frame
-            bool currentlyOnRight = clone.transform.position.x > transform.position.x;
-            float direction = currentlyOnRight ? 1f : -1f;
-            
-            float holdDistance = interactableEffects.GetHoldDistance(this, clone);
-            float holdHeight = interactableEffects.GetHoldHeight(this, clone);
-            Vector3 localTargetPosition = new Vector3(direction * holdDistance, holdHeight, 0);
-            Vector3 worldTargetPosition = transform.TransformPoint(localTargetPosition);
-            
-            clone.transform.position = Vector3.MoveTowards(clone.transform.position, worldTargetPosition, pickupSpeed * Time.deltaTime);
-            clone.transform.rotation = Quaternion.RotateTowards(clone.transform.rotation, Quaternion.identity, pickupSpeed * 100f * Time.deltaTime);
-            
-            if (Vector3.Distance(clone.transform.position, worldTargetPosition) < 0.01f)
-            {
-                clone.transform.rotation = Quaternion.identity;
-                yield break;
-            }
-            
-            yield return null;
-        }
     }
 }

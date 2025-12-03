@@ -188,8 +188,15 @@ MonoBehaviour:
   objectsToDeactivate: []
   enableGrabbing: 1
   groundClearance: 0.3
-  pickupSpeed: 5
+  holdForce: 250
+  rotationForce: 250
+  maxHoldDistance: 1
   zeroFrictionMaterial: {fileID: 6200000, guid: 5d8dffe102b65f2479f6d05d3b8784a8, type: 2}
+  enableTimedToggle: 0
+  activationTimer: 0
+  timedObjectsToToggle: {fileID: 0}
+  enableAnimateAndKill: 0
+  objectToAnimate: {fileID: 0}
 --- !u!114 &2905048676281476473
 MonoBehaviour:
   m_ObjectHideFlags: 0

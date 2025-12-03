@@ -30,14 +30,15 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     [Header("Grab and Carry")]
     public bool enableGrabbing = false;
     public float groundClearance = 0.3f;
-    public float pickupSpeed = 5f;
+    public float holdForce = 250f;
+    public float rotationForce = 250f;
+    public float maxHoldDistance = 1f;
     public PhysicsMaterial2D zeroFrictionMaterial;
-    private Transform originalParent;
-    private Vector3 originalLocalPosition;
     private bool isBeingGrabbed = false;
     private PlayerController grabbingPlayer;
     private Rigidbody2D objectRigidbody;
-    private GameObject carriedClone;
+    private Collider2D objectCollider;
+    private PhysicsMaterial2D originalMaterial;
 
     [Header("Timed Toggle")]
     public bool enableTimedToggle = false;
@@ -52,6 +53,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         objectRigidbody = GetComponent<Rigidbody2D>();
+        objectCollider = GetComponent<Collider2D>();
         
         if (spriteRenderer != null)
         {
@@ -60,9 +62,6 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         
         originalPosition = transform.position;
         targetPosition = originalPosition + moveOffset;
-        
-        originalParent = transform.parent;
-        originalLocalPosition = transform.localPosition;
         
         if (enableGrabbing && objectRigidbody == null)
         {
@@ -83,6 +82,38 @@ public class InteractableEffects : MonoBehaviour, IInteractable
             {
                 isMoving = false;
             }
+        }
+        
+        // Physics-based holding when grabbed
+        if (isBeingGrabbed && grabbingPlayer != null && objectRigidbody != null)
+        {
+            // Calculate target position in world space
+            Vector3 targetWorldPosition = GetTargetHoldPosition();
+            
+            // Apply force to move object toward target position
+            Vector2 direction = (targetWorldPosition - transform.position);
+            float distance = direction.magnitude;
+            
+            if (distance > 0.01f)
+            {
+                Vector2 force = direction.normalized * holdForce * distance;
+                objectRigidbody.AddForce(force, ForceMode2D.Force);
+            }
+            
+            // Snap rotation to nearest 90-degree angle
+            float currentRotation = transform.eulerAngles.z;
+            float targetRotation = Mathf.Round(currentRotation / 90f) * 90f;
+            float rotationDifference = Mathf.DeltaAngle(currentRotation, targetRotation);
+            
+            if (Mathf.Abs(rotationDifference) > 0.1f)
+            {
+                float torque = rotationDifference * rotationForce * Mathf.Deg2Rad;
+                objectRigidbody.AddTorque(torque, ForceMode2D.Force);
+            }
+            
+            // Dampen velocities to prevent oscillation
+            objectRigidbody.linearVelocity *= 0.9f;
+            objectRigidbody.angularVelocity *= 0.9f;
         }
     }
 
@@ -200,122 +231,73 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     {
         if (!enableGrabbing || isBeingGrabbed || objectRigidbody == null) return false;
         
-        try
+        isBeingGrabbed = true;
+        grabbingPlayer = player;
+        
+        // Store original material and apply zero friction material
+        if (objectCollider != null)
         {
-            carriedClone = new GameObject(gameObject.name + "_Carried");
-            carriedClone.transform.SetParent(player.transform);
-            
-            SpriteRenderer cloneSpriteRenderer = carriedClone.AddComponent<SpriteRenderer>();
-            SpriteRenderer originalSpriteRenderer = GetComponent<SpriteRenderer>();
-            if (originalSpriteRenderer != null)
+            if (objectCollider is BoxCollider2D boxCol)
             {
-                cloneSpriteRenderer.sprite = originalSpriteRenderer.sprite;
-                cloneSpriteRenderer.color = originalSpriteRenderer.color;
-                cloneSpriteRenderer.sortingLayerName = originalSpriteRenderer.sortingLayerName;
-                cloneSpriteRenderer.sortingOrder = originalSpriteRenderer.sortingOrder;
+                originalMaterial = boxCol.sharedMaterial;
+                if (zeroFrictionMaterial != null)
+                {
+                    boxCol.sharedMaterial = zeroFrictionMaterial;
+                }
             }
-            
-            Vector3 worldScale = transform.lossyScale;
-            Vector3 parentScale = player.transform.lossyScale;
-            carriedClone.transform.localScale = new Vector3(
-                worldScale.x / parentScale.x,
-                worldScale.y / parentScale.y,
-                worldScale.z / parentScale.z
-            );
-            
-            BoxCollider2D originalBoxCollider = GetComponent<BoxCollider2D>();
-            if (originalBoxCollider != null)
+            else if (objectCollider is CircleCollider2D circleCol)
             {
-                BoxCollider2D cloneCollider = carriedClone.AddComponent<BoxCollider2D>();
-                cloneCollider.size = originalBoxCollider.size;
-                cloneCollider.offset = originalBoxCollider.offset;
-                cloneCollider.sharedMaterial = zeroFrictionMaterial;
+                originalMaterial = circleCol.sharedMaterial;
+                if (zeroFrictionMaterial != null)
+                {
+                    circleCol.sharedMaterial = zeroFrictionMaterial;
+                }
             }
-            
-            CircleCollider2D originalCircleCollider = GetComponent<CircleCollider2D>();
-            if (originalCircleCollider != null)
-            {
-                CircleCollider2D cloneCollider = carriedClone.AddComponent<CircleCollider2D>();
-                cloneCollider.radius = originalCircleCollider.radius;
-                cloneCollider.offset = originalCircleCollider.offset;
-                cloneCollider.sharedMaterial = zeroFrictionMaterial;
-            }
-            
-            carriedClone.transform.position = transform.position;
-            Quaternion startRotation = transform.rotation;
-            carriedClone.transform.rotation = startRotation;
-            
-            player.StartCoroutine(player.AnimatePickup(carriedClone, this, pickupSpeed, startRotation));
-            
-            gameObject.SetActive(false);
-            
-            isBeingGrabbed = true;
-            grabbingPlayer = player;
-            
-            return true;
         }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to grab {gameObject.name}: {e.Message}");
-            if (carriedClone != null)
-            {
-                Destroy(carriedClone);
-                carriedClone = null;
-            }
-            gameObject.SetActive(true);
-            return false;
-        }
+        
+        return true;
     }
     
-    public float GetHoldDistance(PlayerController player, GameObject clone)
+    Vector3 GetTargetHoldPosition()
     {
-        return CalculateHoldDistance(player, clone);
-    }
-    
-    public float GetHoldHeight(PlayerController player, GameObject clone)
-    {
-        return CalculateHoldHeight(player, clone);
-    }
-    
-    float CalculateHoldDistance(PlayerController player, GameObject clone)
-    {
+        if (grabbingPlayer == null) return transform.position;
+        
+        bool playerFacingRight = grabbingPlayer.IsFacingRight();
+        float direction = playerFacingRight ? 1f : -1f;
+        
+        // Calculate hold distance based on player and object sizes
         float playerWidth = 0f;
-        Collider2D playerCollider = player.GetComponent<Collider2D>();
+        Collider2D playerCollider = grabbingPlayer.GetComponent<Collider2D>();
         if (playerCollider != null)
         {
             playerWidth = playerCollider.bounds.size.x / 2f;
         }
         
         float objectWidth = 0f;
-        Collider2D cloneCollider = clone.GetComponent<Collider2D>();
-        if (cloneCollider != null)
+        if (objectCollider != null)
         {
-            objectWidth = cloneCollider.bounds.size.x / 2f;
+            objectWidth = objectCollider.bounds.size.x / 2f;
         }
         
-        return (playerWidth + objectWidth) / player.transform.lossyScale.x;
-    }
-    
-    float CalculateHoldHeight(PlayerController player, GameObject clone)
-    {
+        float holdDistance = playerWidth + objectWidth;
+        
+        // Calculate hold height
         float playerBottomY = 0f;
-        Collider2D playerCollider = player.GetComponent<Collider2D>();
         if (playerCollider != null)
         {
-            playerBottomY = playerCollider.bounds.min.y - player.transform.position.y;
+            playerBottomY = playerCollider.bounds.min.y;
         }
         
         float objectHeight = 0f;
-        Collider2D cloneCollider = clone.GetComponent<Collider2D>();
-        if (cloneCollider != null)
+        if (objectCollider != null)
         {
-            objectHeight = cloneCollider.bounds.size.y / 2f;
+            objectHeight = objectCollider.bounds.size.y / 2f;
         }
         
-        float localGroundY = playerBottomY / player.transform.lossyScale.y;
-        float heightOffset = (objectHeight + groundClearance) / player.transform.lossyScale.y;
+        float targetX = grabbingPlayer.transform.position.x + (direction * holdDistance);
+        float targetY = playerBottomY + objectHeight + groundClearance;
         
-        return localGroundY + heightOffset;
+        return new Vector3(targetX, targetY, grabbingPlayer.transform.position.z);
     }
 
 
@@ -324,22 +306,20 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (!enableGrabbing || !isBeingGrabbed) return;
         
         isBeingGrabbed = false;
+        grabbingPlayer = null;
         
-        if (carriedClone != null)
+        // Restore original physics material
+        if (objectCollider != null)
         {
-            transform.position = carriedClone.transform.position;
-            transform.rotation = carriedClone.transform.rotation;
-            Destroy(carriedClone);
-            carriedClone = null;
+            if (objectCollider is BoxCollider2D boxCol)
+            {
+                boxCol.sharedMaterial = originalMaterial;
+            }
+            else if (objectCollider is CircleCollider2D circleCol)
+            {
+                circleCol.sharedMaterial = originalMaterial;
+            }
         }
-        
-        if (grabbingPlayer != null)
-        {
-            grabbingPlayer.StopAllCoroutines();
-            grabbingPlayer = null;
-        }
-        
-        gameObject.SetActive(true);
     }
 
 
