@@ -184,9 +184,3 @@ MonoBehaviour:
   waypointData:
   - position: {x: 72.24, y: -0.6, z: 0}
     speed: 0
-  - position: {x: 73.68, y: -1.56, z: 0}
-    speed: 0
-  - position: {x: 73.68, y: -3.72, z: 0}
-    speed: 0.5
-  - position: {x: 73.68, y: -1.56, z: 0}
-    speed: 0.5
