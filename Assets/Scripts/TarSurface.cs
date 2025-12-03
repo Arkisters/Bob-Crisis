@@ -4,23 +4,33 @@ public class TarSurface : MonoBehaviour
 {
 
     public bool isMovingInTar = false;
+    [SerializeField] private Rigidbody2D rb;
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
 
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Tar"))
         {
             //change variable in the player controller to true
-            //collision.GetComponent<PlayerController>().isMovingInTar = true;
+            isMovingInTar = true;
         }
     }
 
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player"))
+        if(collision.CompareTag("Tar"))
         {
             //change variable in the player controller to false
-            //collision.GetComponent<PlayerController>().isMovingInTar = true;
+            isMovingInTar = false;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isMovingInTar)
+        {
+            //Debug.Log("Player is moving in tar");
+            rb.linearVelocity = rb.linearVelocity * 0.5f;
         }
     }
 }

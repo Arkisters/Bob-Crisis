@@ -11,6 +11,7 @@ TagManager:
   - Crusher
   - Magnet
   - MagnetWall
+  - Tar
   layers:
   - Default
   - TransparentFX
