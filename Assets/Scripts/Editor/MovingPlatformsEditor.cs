@@ -88,60 +88,31 @@ public class MovingPlatformsEditor : Editor
                 if (index == 0)
                 {
                     // Snapping waypoint 0 snaps the parent (platform stays at local 0,0,0)
+                    Vector3 targetPos = platform.transform.parent != null ? platform.transform.parent.position : platform.transform.position;
+                    targetPos.x = Mathf.Round((targetPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
+                    targetPos.y = Mathf.Round((targetPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
+                    targetPos.x = Mathf.Round(targetPos.x * 100f) / 100f;
+                    targetPos.y = Mathf.Round(targetPos.y * 100f) / 100f;
+                    
                     if (platform.transform.parent != null)
                     {
-                        Vector3 parentPos = platform.transform.parent.position;
-                        parentPos.x = Mathf.Round((parentPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
-                        parentPos.y = Mathf.Round((parentPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
-                        // Round to 0.01
-                        parentPos.x = Mathf.Round(parentPos.x * 100f) / 100f;
-                        parentPos.y = Mathf.Round(parentPos.y * 100f) / 100f;
-                        platform.transform.parent.position = parentPos;
-                        
-                        // Update waypoint 0 to match parent position
-                        positionProp.vector3Value = parentPos;
+                        platform.transform.parent.position = targetPos;
                     }
                     else
                     {
-                        // No parent, snap platform directly
-                        Vector3 platformPos = platform.transform.position;
-                        platformPos.x = Mathf.Round((platformPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
-                        platformPos.y = Mathf.Round((platformPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
-                        // Round to 0.01
-                        platformPos.x = Mathf.Round(platformPos.x * 100f) / 100f;
-                        platformPos.y = Mathf.Round(platformPos.y * 100f) / 100f;
-                        platform.transform.position = platformPos;
-                        
-                        // Update waypoint 0 to match
-                        positionProp.vector3Value = platformPos;
+                        platform.transform.position = targetPos;
                     }
+                    positionProp.vector3Value = targetPos;
                 }
                 else
                 {
-                    // For other waypoints, snap relative to platform's grid
                     Vector3 pos = positionProp.vector3Value;
                     pos.x = Mathf.Round((pos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
                     pos.y = Mathf.Round((pos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
-                    // Round to 0.01
                     pos.x = Mathf.Round(pos.x * 100f) / 100f;
                     pos.y = Mathf.Round(pos.y * 100f) / 100f;
                     positionProp.vector3Value = pos;
-                    // Update preview to show this waypoint
-                    if (!Application.isPlaying)
-                    {
-                        if (platform.transform.parent != null)
-                        {
-                            // Move parent to waypoint position, keep platform at local 0,0,0
-                            platform.transform.parent.position = pos;
-                            platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                            platform.transform.localPosition = Vector3.zero;
-                        }
-                        else
-                        {
-                            platform.transform.position = pos;
-                            platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        }
-                    }
+                    UpdatePlatformPreview(platform, pos, rotationProp.floatValue);
                 }
                 serializedObject.ApplyModifiedProperties();
             }
@@ -158,34 +129,16 @@ public class MovingPlatformsEditor : Editor
             
             if (EditorGUI.EndChangeCheck())
             {
-                // Convert relative back to absolute (from first waypoint) and store
                 if (waypointList.serializedProperty.arraySize > 0)
                 {
                     SerializedProperty firstWaypoint = waypointList.serializedProperty.GetArrayElementAtIndex(0);
-                    SerializedProperty firstPos = firstWaypoint.FindPropertyRelative("position");
-                    Vector3 newAbsolutePos = newRelativePos + firstPos.vector3Value;
-                    // Round to 0.01
+                    Vector3 newAbsolutePos = newRelativePos + firstWaypoint.FindPropertyRelative("position").vector3Value;
                     newAbsolutePos.x = Mathf.Round(newAbsolutePos.x * 100f) / 100f;
                     newAbsolutePos.y = Mathf.Round(newAbsolutePos.y * 100f) / 100f;
                     newAbsolutePos.z = Mathf.Round(newAbsolutePos.z * 100f) / 100f;
                     positionProp.vector3Value = newAbsolutePos;
                     serializedObject.ApplyModifiedProperties();
-                    // Update preview
-                    if (!Application.isPlaying)
-                    {
-                        if (platform.transform.parent != null)
-                        {
-                            // Move parent to waypoint position, keep platform at local 0,0,0
-                            platform.transform.parent.position = newAbsolutePos;
-                            platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                            platform.transform.localPosition = Vector3.zero;
-                        }
-                        else
-                        {
-                            platform.transform.position = newAbsolutePos;
-                            platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        }
-                    }
+                    UpdatePlatformPreview(platform, newAbsolutePos, rotationProp.floatValue);
                 }
             }
             
@@ -210,17 +163,10 @@ public class MovingPlatformsEditor : Editor
             {
                 rotationProp.floatValue = newRotation;
                 serializedObject.ApplyModifiedProperties();
-                // Update preview
                 if (!Application.isPlaying)
                 {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, newRotation);
-                    }
-                    else
-                    {
-                        platform.transform.eulerAngles = new Vector3(0, 0, newRotation);
-                    }
+                    Transform targetTransform = platform.transform.parent != null ? platform.transform.parent : platform.transform;
+                    targetTransform.eulerAngles = new Vector3(0, 0, newRotation);
                 }
             }
             
@@ -235,97 +181,25 @@ public class MovingPlatformsEditor : Editor
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "←"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.x -= ONE_PIXEL;
-                pos.x = Mathf.Round(pos.x * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(-ONE_PIXEL, 0, 0), rotationProp, platform);
             }
             startX += buttonWidth + buttonSpacing;
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "→"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.x += ONE_PIXEL;
-                pos.x = Mathf.Round(pos.x * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(ONE_PIXEL, 0, 0), rotationProp, platform);
             }
             startX += buttonWidth + buttonSpacing;
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "↓"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.y -= ONE_PIXEL;
-                pos.y = Mathf.Round(pos.y * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(0, -ONE_PIXEL, 0), rotationProp, platform);
             }
             startX += buttonWidth + buttonSpacing;
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "↑"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.y += ONE_PIXEL;
-                pos.y = Mathf.Round(pos.y * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(0, ONE_PIXEL, 0), rotationProp, platform);
             }
             
             // 16 pixel (1 tile) movement buttons on next line
@@ -337,97 +211,25 @@ public class MovingPlatformsEditor : Editor
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "←"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.x -= ONE_TILE;
-                pos.x = Mathf.Round(pos.x * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(-ONE_TILE, 0, 0), rotationProp, platform);
             }
             startX += buttonWidth + buttonSpacing;
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "→"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.x += ONE_TILE;
-                pos.x = Mathf.Round(pos.x * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(ONE_TILE, 0, 0), rotationProp, platform);
             }
             startX += buttonWidth + buttonSpacing;
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "↓"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.y -= ONE_TILE;
-                pos.y = Mathf.Round(pos.y * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(0, -ONE_TILE, 0), rotationProp, platform);
             }
             startX += buttonWidth + buttonSpacing;
             
             if (GUI.Button(new Rect(startX, rect.y, buttonWidth, lineHeight), "↑"))
             {
-                Vector3 pos = positionProp.vector3Value;
-                pos.y += ONE_TILE;
-                pos.y = Mathf.Round(pos.y * 100f) / 100f;
-                positionProp.vector3Value = pos;
-                serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = pos;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
-                    }
-                }
+                ApplyPositionOffset(positionProp, new Vector3(0, ONE_TILE, 0), rotationProp, platform);
             }
         };
         
@@ -477,6 +279,35 @@ public class MovingPlatformsEditor : Editor
             serializedObject.ApplyModifiedProperties();
         };
     }
+    
+    // Helper method to update platform preview position and rotation
+    private void UpdatePlatformPreview(MovingPlatforms platform, Vector3 position, float rotation)
+    {
+        if (Application.isPlaying) return;
+        
+        if (platform.transform.parent != null)
+        {
+            platform.transform.parent.position = position;
+            platform.transform.parent.eulerAngles = new Vector3(0, 0, rotation);
+            platform.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            platform.transform.position = position;
+            platform.transform.eulerAngles = new Vector3(0, 0, rotation);
+        }
+    }
+    
+    // Helper method to apply position offset
+    private void ApplyPositionOffset(SerializedProperty positionProp, Vector3 offset, SerializedProperty rotationProp, MovingPlatforms platform)
+    {
+        Vector3 pos = positionProp.vector3Value + offset;
+        pos.x = Mathf.Round(pos.x * 100f) / 100f;
+        pos.y = Mathf.Round(pos.y * 100f) / 100f;
+        positionProp.vector3Value = pos;
+        serializedObject.ApplyModifiedProperties();
+        UpdatePlatformPreview(platform, pos, rotationProp.floatValue);
+    }
 
     public override void OnInspectorGUI()
     {
@@ -509,15 +340,7 @@ public class MovingPlatformsEditor : Editor
             {
                 SerializedProperty firstWaypoint = waypointsProperty.GetArrayElementAtIndex(0);
                 Vector3 startPos = firstWaypoint.FindPropertyRelative("position").vector3Value;
-                if (platform.transform.parent != null)
-                {
-                    platform.transform.parent.position = startPos;
-                    platform.transform.localPosition = Vector3.zero;
-                }
-                else
-                {
-                    platform.transform.position = startPos;
-                }
+                UpdatePlatformPreview(platform, startPos, 0f);
                 EditorUtility.SetDirty(platform);
             }
         }
@@ -527,15 +350,7 @@ public class MovingPlatformsEditor : Editor
         {
             SerializedProperty firstWaypoint = waypointsProperty.GetArrayElementAtIndex(0);
             Vector3 startPos = firstWaypoint.FindPropertyRelative("position").vector3Value;
-            if (platform.transform.parent != null)
-            {
-                platform.transform.parent.position = startPos;
-                platform.transform.localPosition = Vector3.zero;
-            }
-            else
-            {
-                platform.transform.position = startPos;
-            }
+            UpdatePlatformPreview(platform, startPos, 0f);
             EditorUtility.SetDirty(platform);
         }
         
@@ -560,20 +375,9 @@ public class MovingPlatformsEditor : Editor
             Handles.color = Color.yellow;
             if (Handles.Button(platform.waypointData[i].position, Quaternion.identity, 0.15f, 0.15f, Handles.SphereHandleCap))
             {
-                // Click on waypoint to move platform there in edit mode
                 if (!Application.isPlaying)
                 {
-                    if (platform.transform.parent != null)
-                    {
-                        platform.transform.parent.position = platform.waypointData[i].position;
-                        platform.transform.parent.eulerAngles = new Vector3(0, 0, platform.waypointData[i].rotation);
-                        platform.transform.localPosition = Vector3.zero;
-                    }
-                    else
-                    {
-                        platform.transform.position = platform.waypointData[i].position;
-                        platform.transform.eulerAngles = new Vector3(0, 0, platform.waypointData[i].rotation);
-                    }
+                    UpdatePlatformPreview(platform, platform.waypointData[i].position, platform.waypointData[i].rotation);
                     EditorUtility.SetDirty(platform);
                 }
             }
