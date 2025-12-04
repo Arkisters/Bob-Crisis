@@ -26,6 +26,11 @@ public class PlayerController : MonoBehaviour
     [Header("Interaction Settings")]
     public float interactionBufferTime = 0.15f;
     
+    [Header("Climbing Settings")]
+    public float climbSpeed = 4f;
+    public float climbingLinearDamping = 15f;
+    private float normalLinearDamping;
+    
     [Header("Animation")]
     public Animator animator;
     
@@ -50,6 +55,8 @@ public class PlayerController : MonoBehaviour
     private bool wasFacingRight = true;
     private MovingPlatforms currentPlatform;
     private Vector3 platformVelocity;
+    private bool isOnLadder;
+    private bool isClimbing;
     
     private const string ANIM_X = "x";
     private const string ANIM_IS_CROUCHING = "isCrouching";
@@ -78,6 +85,10 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("PlayerController requires a Rigidbody2D component!");
         }
+        else
+        {
+            normalLinearDamping = rb.linearDamping;
+        }
     }
     
     void Update()
@@ -90,6 +101,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         CheckGroundStatus();
+        UpdateClimbingState();
 
         if (isGrounded)
         {
@@ -103,7 +115,19 @@ public class PlayerController : MonoBehaviour
         jumpBufferCounter -= Time.fixedDeltaTime;
         interactionBufferCounter -= Time.fixedDeltaTime;
 
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching)
+        // Can't jump when on a ladder - instead start climbing
+        if (jumpBufferCounter > 0f && isOnLadder)
+        {
+            if (!isClimbing)
+            {
+                isClimbing = true;
+                rb.gravityScale = 0f;
+                rb.linearDamping = climbingLinearDamping;
+            }
+            jumpBufferCounter = 0f;
+        }
+        
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching && !isOnLadder)
         {
             Jump();
             jumpBufferCounter = 0f;
@@ -235,7 +259,7 @@ public class PlayerController : MonoBehaviour
     
     void HandleCrouching()
     {
-        isCrouching = crouchHeld && isGrounded;
+        isCrouching = crouchHeld && isGrounded && !isClimbing;
         
         if (crouchHeld)
         {
@@ -249,6 +273,13 @@ public class PlayerController : MonoBehaviour
     
     void HandleMovement()
     {
+        // Handle climbing movement separately
+        if (isClimbing)
+        {
+            HandleClimbingMovement();
+            return;
+        }
+        
         float currentSpeed;
         if (isCrouching)
         {
@@ -476,6 +507,70 @@ public class PlayerController : MonoBehaviour
     public bool IsFacingRight()
     {
         return isFacingRight;
+    }
+    
+    void UpdateClimbingState()
+    {
+        // Deactivate climbing only if grounded AND moving down (crouching)
+        if (isClimbing && isGrounded && crouchHeld)
+        {
+            isClimbing = false;
+            rb.gravityScale = 2f;
+            rb.linearDamping = normalLinearDamping;
+        }
+        
+        // Auto-start climbing if on ladder and airborne (falling into ladder)
+        if (isOnLadder && !isGrounded && !isClimbing)
+        {
+            isClimbing = true;
+            rb.gravityScale = 0f;
+            rb.linearDamping = climbingLinearDamping;
+        }
+    }
+    
+    void HandleClimbingMovement()
+    {
+        // Handle climbing up with jump (hold supported)
+        if (jumpHeld)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, climbSpeed);
+        }
+        // Handle climbing down with crouch (hold supported)
+        else if (crouchHeld)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -climbSpeed);
+        }
+        else
+        {
+            // Not pressing up or down, stop vertical movement
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        }
+        
+        // Allow horizontal movement to get off ladder (but dampened by high linear damping)
+        if (Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            float moveForce = horizontalInput * airAcceleration * 0.5f;
+            rb.AddForce(Vector2.right * moveForce, ForceMode2D.Force);
+        }
+    }
+    
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder"))
+        {
+            isOnLadder = true;
+        }
+    }
+    
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder"))
+        {
+            isOnLadder = false;
+            isClimbing = false;
+            rb.gravityScale = 2f;
+            rb.linearDamping = normalLinearDamping;
+        }
     }
 
 
