@@ -2,17 +2,44 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+public enum VolumeMode
+{
+    Both,           // Can switch to either green or normal
+    GreenOnly,      // Only switch to green volume
+    NormalOnly      // Only switch to normal volume
+}
+
 public class PostProcessingEnabler : MonoBehaviour
 {
     [SerializeField] private Volume baseVolume, greenVolume;
-    private bool hasSwitched = true;
+    [SerializeField] private VolumeMode volumeMode = VolumeMode.Both;
+    private Coroutine switchCoroutine;
+
+    public void SetVolumeMode(VolumeMode mode)
+    {
+        volumeMode = mode;
+    }
 
     public void SwitchVolumes(float speed)
     {
-        if (!hasSwitched) return;
+        bool shouldSwitchToGreen = baseVolume.weight <= 0;
 
-        StartCoroutine(SwitchVolumes_(speed, baseVolume.weight <= 0));
-        hasSwitched = false;
+        // Check if this switch is allowed based on volumeMode
+        if (volumeMode == VolumeMode.GreenOnly && shouldSwitchToGreen)
+        {
+            return;
+        }
+        if (volumeMode == VolumeMode.NormalOnly && !shouldSwitchToGreen)
+        {
+            return;
+        }
+
+        if (switchCoroutine != null)
+        {
+            StopCoroutine(switchCoroutine);
+        }
+
+        switchCoroutine = StartCoroutine(SwitchVolumes_(speed, shouldSwitchToGreen));
     }
 
     private IEnumerator SwitchVolumes_(float speed, bool switchFromGreenVolume)
@@ -30,6 +57,6 @@ public class PostProcessingEnabler : MonoBehaviour
         selectedVol.weight = 1;
         notSelectedVol.weight = 0;
 
-        hasSwitched = true;
+        switchCoroutine = null;
     }
 }
