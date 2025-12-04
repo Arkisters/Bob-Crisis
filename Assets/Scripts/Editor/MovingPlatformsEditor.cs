@@ -38,6 +38,7 @@ public class MovingPlatformsEditor : Editor
                 
                 newElement.FindPropertyRelative("position").vector3Value = oldPos.vector3Value;
                 newElement.FindPropertyRelative("speed").floatValue = platform.moveSpeed;
+                newElement.FindPropertyRelative("rotation").floatValue = 0f;
             }
             serializedObject.ApplyModifiedProperties();
         }
@@ -58,6 +59,7 @@ public class MovingPlatformsEditor : Editor
             SerializedProperty element = waypointList.serializedProperty.GetArrayElementAtIndex(index);
             SerializedProperty positionProp = element.FindPropertyRelative("position");
             SerializedProperty speedProp = element.FindPropertyRelative("speed");
+            SerializedProperty rotationProp = element.FindPropertyRelative("rotation");
             
             rect.y += 2;
             
@@ -79,51 +81,9 @@ public class MovingPlatformsEditor : Editor
                 relativePos.z = Mathf.Round(relativePos.z * 100f) / 100f;
             }
             
-            string controlName = "Waypoint_" + index;
-            GUI.SetNextControlName(controlName);
-            
-            EditorGUI.BeginChangeCheck();
-            Vector3 newRelativePos = EditorGUI.Vector3Field(
-                new Rect(rect.x, rect.y, rect.width, lineHeight),
-                $"Point {index} (Offset)",
-                relativePos
-            );
-            
-            if (EditorGUI.EndChangeCheck())
-            {
-                // Convert relative back to absolute (from first waypoint) and store
-                if (waypointList.serializedProperty.arraySize > 0)
-                {
-                    SerializedProperty firstWaypoint = waypointList.serializedProperty.GetArrayElementAtIndex(0);
-                    SerializedProperty firstPos = firstWaypoint.FindPropertyRelative("position");
-                    Vector3 newAbsolutePos = newRelativePos + firstPos.vector3Value;
-                    // Round to 0.01
-                    newAbsolutePos.x = Mathf.Round(newAbsolutePos.x * 100f) / 100f;
-                    newAbsolutePos.y = Mathf.Round(newAbsolutePos.y * 100f) / 100f;
-                    newAbsolutePos.z = Mathf.Round(newAbsolutePos.z * 100f) / 100f;
-                    positionProp.vector3Value = newAbsolutePos;
-                    serializedObject.ApplyModifiedProperties();
-                }
-            }
-            
-            if (GUI.GetNameOfFocusedControl() == controlName)
-            {
-                isEditingWaypoints = true;
-            }
-            
-            // Speed field on next line
-            rect.y += lineHeight + spacing;
-            EditorGUI.LabelField(new Rect(rect.x + 20f, rect.y, 50f, lineHeight), "Speed:");
-            speedProp.floatValue = EditorGUI.FloatField(new Rect(rect.x + 70f, rect.y, 60f, lineHeight), speedProp.floatValue);
-            
-            // Movement buttons on next line
-            rect.y += lineHeight + spacing;
-            float buttonWidth = 30f;
-            float buttonSpacing = 2f;
-            float startX = rect.x + 20f; // Indent for visual grouping
-            
-            // Snap to grid button
-            if (GUI.Button(new Rect(startX, rect.y, 60f, lineHeight), "Snap"))
+            // Snap button on left side of position field
+            float snapWidth = 50f;
+            if (GUI.Button(new Rect(rect.x, rect.y, snapWidth, lineHeight), "Snap"))
             {
                 if (index == 0)
                 {
@@ -153,14 +113,79 @@ public class MovingPlatformsEditor : Editor
                     if (!Application.isPlaying)
                     {
                         platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                     }
                 }
                 serializedObject.ApplyModifiedProperties();
             }
             
-            startX += 62f + buttonSpacing;
+            string controlName = "Waypoint_" + index;
+            GUI.SetNextControlName(controlName);
             
-            // 1 pixel movement buttons
+            EditorGUI.BeginChangeCheck();
+            Vector3 newRelativePos = EditorGUI.Vector3Field(
+                new Rect(rect.x + snapWidth + 5f, rect.y, rect.width - snapWidth - 5f, lineHeight),
+                $"Point {index} (Offset)",
+                relativePos
+            );
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                // Convert relative back to absolute (from first waypoint) and store
+                if (waypointList.serializedProperty.arraySize > 0)
+                {
+                    SerializedProperty firstWaypoint = waypointList.serializedProperty.GetArrayElementAtIndex(0);
+                    SerializedProperty firstPos = firstWaypoint.FindPropertyRelative("position");
+                    Vector3 newAbsolutePos = newRelativePos + firstPos.vector3Value;
+                    // Round to 0.01
+                    newAbsolutePos.x = Mathf.Round(newAbsolutePos.x * 100f) / 100f;
+                    newAbsolutePos.y = Mathf.Round(newAbsolutePos.y * 100f) / 100f;
+                    newAbsolutePos.z = Mathf.Round(newAbsolutePos.z * 100f) / 100f;
+                    positionProp.vector3Value = newAbsolutePos;
+                    serializedObject.ApplyModifiedProperties();
+                    // Update preview
+                    if (!Application.isPlaying)
+                    {
+                        platform.transform.position = newAbsolutePos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
+                }
+            }
+            
+            if (GUI.GetNameOfFocusedControl() == controlName)
+            {
+                isEditingWaypoints = true;
+            }
+            
+            // Speed and Rotation fields on next line
+            rect.y += lineHeight + spacing;
+            float labelWidth = 50f;
+            float fieldWidth = 60f;
+            float rightSideX = rect.x + rect.width - labelWidth - fieldWidth;
+            
+            EditorGUI.LabelField(new Rect(rect.x + 20f, rect.y, labelWidth, lineHeight), "Speed:");
+            speedProp.floatValue = EditorGUI.FloatField(new Rect(rect.x + 70f, rect.y, fieldWidth, lineHeight), speedProp.floatValue);
+            
+            EditorGUI.LabelField(new Rect(rightSideX, rect.y, labelWidth, lineHeight), "Rot:");
+            EditorGUI.BeginChangeCheck();
+            float newRotation = EditorGUI.FloatField(new Rect(rightSideX + labelWidth, rect.y, fieldWidth, lineHeight), rotationProp.floatValue);
+            if (EditorGUI.EndChangeCheck())
+            {
+                rotationProp.floatValue = newRotation;
+                serializedObject.ApplyModifiedProperties();
+                // Update preview
+                if (!Application.isPlaying)
+                {
+                    platform.transform.eulerAngles = new Vector3(0, 0, newRotation);
+                }
+            }
+            
+            // Movement buttons - 1 pixel row
+            rect.y += lineHeight + spacing;
+            float buttonWidth = 30f;
+            float buttonSpacing = 2f;
+            float startX = rect.x + 20f;
+            
             EditorGUI.LabelField(new Rect(startX, rect.y, 40f, lineHeight), "1px:");
             startX += 35f;
             
@@ -174,6 +199,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -188,6 +214,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -202,6 +229,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -216,6 +244,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
             
@@ -236,6 +265,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -250,6 +280,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -264,6 +295,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -278,6 +310,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = pos;
+                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
                 }
             }
         };
@@ -285,7 +318,7 @@ public class MovingPlatformsEditor : Editor
         // Adjust element height to accommodate buttons
         waypointList.elementHeightCallback = (int index) =>
         {
-            return EditorGUIUtility.singleLineHeight * 4 + 12f; // 4 lines + spacing
+            return EditorGUIUtility.singleLineHeight * 4 + 12f; // 4 lines: position, speed/rotation, 1px buttons, 1 tile buttons
         };
         
         // On add
@@ -296,12 +329,14 @@ public class MovingPlatformsEditor : Editor
             SerializedProperty newElement = list.serializedProperty.GetArrayElementAtIndex(index);
             SerializedProperty newPos = newElement.FindPropertyRelative("position");
             SerializedProperty newSpeed = newElement.FindPropertyRelative("speed");
+            SerializedProperty newRotation = newElement.FindPropertyRelative("rotation");
             
             if (index == 0)
             {
                 // First waypoint is at platform's current position
                 newPos.vector3Value = platform.transform.position;
                 newSpeed.floatValue = platform.moveSpeed;
+                newRotation.floatValue = platform.transform.eulerAngles.z;
             }
             else
             {
@@ -309,8 +344,10 @@ public class MovingPlatformsEditor : Editor
                 SerializedProperty lastElement = list.serializedProperty.GetArrayElementAtIndex(index - 1);
                 SerializedProperty lastPos = lastElement.FindPropertyRelative("position");
                 SerializedProperty lastSpeed = lastElement.FindPropertyRelative("speed");
+                SerializedProperty lastRotation = lastElement.FindPropertyRelative("rotation");
                 newPos.vector3Value = lastPos.vector3Value + Vector3.right * ONE_TILE;
                 newSpeed.floatValue = lastSpeed.floatValue; // Copy speed from previous
+                newRotation.floatValue = lastRotation.floatValue; // Copy rotation from previous
             }
             
             serializedObject.ApplyModifiedProperties();
@@ -325,6 +362,9 @@ public class MovingPlatformsEditor : Editor
         
         // Move Speed field
         EditorGUILayout.PropertyField(serializedObject.FindProperty("moveSpeed"));
+        
+        // Constant Rotation Speed field
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("constantRotationSpeed"));
         
         EditorGUILayout.Space();
         
@@ -382,6 +422,7 @@ public class MovingPlatformsEditor : Editor
                 if (!Application.isPlaying)
                 {
                     platform.transform.position = platform.waypointData[i].position;
+                    platform.transform.eulerAngles = new Vector3(0, 0, platform.waypointData[i].rotation);
                     EditorUtility.SetDirty(platform);
                 }
             }
