@@ -13,9 +13,11 @@ GameObject:
   - component: {fileID: 5122218284166549820}
   - component: {fileID: 8520398860470558638}
   - component: {fileID: 1200454449187117070}
+  - component: {fileID: 1174750767772278345}
+  - component: {fileID: 7646134372501855526}
   - component: {fileID: 1631940732457008358}
   - component: {fileID: 239251755196655000}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Character(TaeEdition)
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -80,7 +82,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 2126001788, guid: 62002fb57d756ee4e85ebdf2ee98c3d6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -193,11 +195,43 @@ MonoBehaviour:
   jumpHoldForce: 25
   carryingJumpMultiplier: 0.75
   interactionBufferTime: 0.15
+  climbSpeed: 4
+  climbingLinearDamping: 15
   animator: {fileID: 239251755196655000}
   interactionRange: 0.75
   interactableLayer:
     serializedVersion: 2
     m_Bits: 768
+--- !u!114 &1174750767772278345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510301242005739714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b4ffeb62436394bbbac243ff468dd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 0
+  maxHealth: 3
+  deathTimer: 3
+  takingDamage: 0
+--- !u!114 &7646134372501855526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510301242005739714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb420e2f8fc54d04094a1bc6193f18ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMovingInTar: 0
+  rb: {fileID: 8520398860470558638}
 --- !u!114 &1631940732457008358
 MonoBehaviour:
   m_ObjectHideFlags: 0
