@@ -37,7 +37,15 @@ public class PlayerController : MonoBehaviour
     [Header("Interaction")]
     public float interactionRange = 0.75f;
     public LayerMask interactableLayer;
-    
+
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
+
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     private bool isGrounded;

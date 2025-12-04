@@ -10,8 +10,7 @@ TagManager:
   - Ladder
   - Crusher
   - Magnet
-  - MagnetWall
-  - Tar
+  - Audio
   layers:
   - Default
   - TransparentFX
