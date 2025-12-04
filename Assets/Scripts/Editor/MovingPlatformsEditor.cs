@@ -85,34 +85,34 @@ public class MovingPlatformsEditor : Editor
             float snapWidth = 50f;
             if (GUI.Button(new Rect(rect.x, rect.y, snapWidth, lineHeight), "Snap"))
             {
+                Vector3 currentWorldPos = positionProp.vector3Value;
+                
                 if (index == 0)
                 {
-                    // Snapping waypoint 0 snaps the parent (platform stays at local 0,0,0)
-                    Vector3 targetPos = platform.transform.parent != null ? platform.transform.parent.position : platform.transform.position;
-                    targetPos.x = Mathf.Round((targetPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
-                    targetPos.y = Mathf.Round((targetPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
-                    targetPos.x = Mathf.Round(targetPos.x * 100f) / 100f;
-                    targetPos.y = Mathf.Round(targetPos.y * 100f) / 100f;
-                    
+                    // Snapping waypoint 0: Get platform's current world position and snap it
+                    Vector3 platformWorldPos = platform.transform.position;
                     if (platform.transform.parent != null)
                     {
-                        platform.transform.parent.position = targetPos;
+                        platformWorldPos = platform.transform.parent.TransformPoint(platform.transform.localPosition);
                     }
-                    else
-                    {
-                        platform.transform.position = targetPos;
-                    }
-                    positionProp.vector3Value = targetPos;
+                    
+                    platformWorldPos.x = Mathf.Round((platformWorldPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
+                    platformWorldPos.y = Mathf.Round((platformWorldPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
+                    platformWorldPos.x = Mathf.Round(platformWorldPos.x * 100f) / 100f;
+                    platformWorldPos.y = Mathf.Round(platformWorldPos.y * 100f) / 100f;
+                    
+                    positionProp.vector3Value = platformWorldPos;
+                    UpdatePlatformPreview(platform, platformWorldPos, rotationProp.floatValue);
                 }
                 else
                 {
-                    Vector3 pos = positionProp.vector3Value;
-                    pos.x = Mathf.Round((pos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
-                    pos.y = Mathf.Round((pos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
-                    pos.x = Mathf.Round(pos.x * 100f) / 100f;
-                    pos.y = Mathf.Round(pos.y * 100f) / 100f;
-                    positionProp.vector3Value = pos;
-                    UpdatePlatformPreview(platform, pos, rotationProp.floatValue);
+                    // For other waypoints, snap the waypoint position
+                    currentWorldPos.x = Mathf.Round((currentWorldPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
+                    currentWorldPos.y = Mathf.Round((currentWorldPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
+                    currentWorldPos.x = Mathf.Round(currentWorldPos.x * 100f) / 100f;
+                    currentWorldPos.y = Mathf.Round(currentWorldPos.y * 100f) / 100f;
+                    positionProp.vector3Value = currentWorldPos;
+                    UpdatePlatformPreview(platform, currentWorldPos, rotationProp.floatValue);
                 }
                 serializedObject.ApplyModifiedProperties();
             }
@@ -251,17 +251,21 @@ public class MovingPlatformsEditor : Editor
             
             if (index == 0)
             {
-                // First waypoint is at parent position (or platform position if no parent)
+                // First waypoint is at platform's current world position
+                Vector3 worldPos = platform.transform.position;
                 if (platform.transform.parent != null)
                 {
-                    newPos.vector3Value = platform.transform.parent.position;
-                    newRotation.floatValue = platform.transform.parent.eulerAngles.z;
+                    worldPos = platform.transform.parent.TransformPoint(platform.transform.localPosition);
                 }
-                else
+                newPos.vector3Value = worldPos;
+                
+                // Get world rotation
+                float worldRotation = platform.transform.eulerAngles.z;
+                if (platform.transform.parent != null)
                 {
-                    newPos.vector3Value = platform.transform.position;
-                    newRotation.floatValue = platform.transform.eulerAngles.z;
+                    worldRotation = platform.transform.parent.eulerAngles.z + platform.transform.localEulerAngles.z;
                 }
+                newRotation.floatValue = worldRotation;
                 newSpeed.floatValue = platform.moveSpeed;
             }
             else
@@ -280,21 +284,41 @@ public class MovingPlatformsEditor : Editor
         };
     }
     
+    void OnDisable()
+    {
+        // Reset platform to start position when deselected
+        MovingPlatforms platform = (MovingPlatforms)target;
+        if (platform != null && !Application.isPlaying)
+        {
+            SerializedProperty waypointsProperty = serializedObject.FindProperty("waypointData");
+            if (waypointsProperty != null && waypointsProperty.arraySize > 0)
+            {
+                SerializedProperty firstWaypoint = waypointsProperty.GetArrayElementAtIndex(0);
+                Vector3 startPos = firstWaypoint.FindPropertyRelative("position").vector3Value;
+                float startRot = firstWaypoint.FindPropertyRelative("rotation").floatValue;
+                UpdatePlatformPreview(platform, startPos, startRot);
+            }
+        }
+    }
+    
     // Helper method to update platform preview position and rotation
-    private void UpdatePlatformPreview(MovingPlatforms platform, Vector3 position, float rotation)
+    private void UpdatePlatformPreview(MovingPlatforms platform, Vector3 worldPosition, float worldRotation)
     {
         if (Application.isPlaying) return;
         
         if (platform.transform.parent != null)
         {
-            platform.transform.parent.position = position;
-            platform.transform.parent.eulerAngles = new Vector3(0, 0, rotation);
-            platform.transform.localPosition = Vector3.zero;
+            // Convert world position to local space
+            platform.transform.localPosition = platform.transform.parent.InverseTransformPoint(worldPosition);
+            // Convert world rotation to local rotation
+            float parentRotation = platform.transform.parent.eulerAngles.z;
+            platform.transform.localEulerAngles = new Vector3(0, 0, worldRotation - parentRotation);
         }
         else
         {
-            platform.transform.position = position;
-            platform.transform.eulerAngles = new Vector3(0, 0, rotation);
+            // No parent, use world space directly
+            platform.transform.position = worldPosition;
+            platform.transform.eulerAngles = new Vector3(0, 0, worldRotation);
         }
     }
     
