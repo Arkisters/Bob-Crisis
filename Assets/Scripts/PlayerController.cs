@@ -57,6 +57,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 platformVelocity;
     private bool isOnLadder;
     private bool isClimbing;
+    private ChainBehaviour grabbedChain;
+    private bool isTransitioningToChain;
+    private float chainTransitionSpeed = 5f;
     
     private const string ANIM_X = "x";
     private const string ANIM_IS_CROUCHING = "isCrouching";
@@ -127,7 +130,14 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
         }
         
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching && !isOnLadder)
+        // Jump off chain with momentum transfer (no jump hold)
+        if (jumpBufferCounter > 0f && grabbedChain != null)
+        {
+            JumpOffChain();
+            jumpBufferCounter = 0f;
+        }
+        
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && !isCrouching && !isOnLadder && grabbedChain == null)
         {
             Jump();
             jumpBufferCounter = 0f;
@@ -167,6 +177,41 @@ public class PlayerController : MonoBehaviour
             {
                 currentlyGrabbing.StopGrab();
                 currentlyGrabbing = null;
+            }
+        }
+        
+        // Handle chain hanging - sync position and check range
+        if (grabbedChain != null)
+        {
+            if (IsChainInRange(grabbedChain.gameObject))
+            {
+                // Calculate target position with offset below chain
+                Vector2 chainPos = grabbedChain.GetPosition();
+                Vector2 targetPos = chainPos + new Vector2(0f, -0.5f);
+                
+                if (isTransitioningToChain)
+                {
+                    // Smooth transition to chain position
+                    rb.position = Vector2.MoveTowards(rb.position, targetPos, chainTransitionSpeed * Time.fixedDeltaTime);
+                    
+                    // Stop transitioning when close enough
+                    if (Vector2.Distance(rb.position, targetPos) < 0.01f)
+                    {
+                        isTransitioningToChain = false;
+                    }
+                }
+                else
+                {
+                    // Lock to chain position
+                    rb.position = targetPos;
+                }
+                
+                rb.linearVelocity = Vector2.zero; // Keep player still relative to chain
+            }
+            else
+            {
+                // Out of range, release chain with momentum
+                ReleaseChain();
             }
         }
 
@@ -261,6 +306,12 @@ public class PlayerController : MonoBehaviour
     {
         isCrouching = crouchHeld && isGrounded && !isClimbing;
         
+        // Release chain when crouch pressed (keep momentum)
+        if (crouchHeld && grabbedChain != null)
+        {
+            ReleaseChain();
+        }
+        
         if (crouchHeld)
         {
             rb.AddForce(Vector2.down * fastFallForce, ForceMode2D.Force);
@@ -273,6 +324,12 @@ public class PlayerController : MonoBehaviour
     
     void HandleMovement()
     {
+        // Skip movement when hanging on chain
+        if (grabbedChain != null)
+        {
+            return;
+        }
+        
         // Handle climbing movement separately
         if (isClimbing)
         {
@@ -399,6 +456,16 @@ public class PlayerController : MonoBehaviour
     {
         if (boxCollider == null) return false;
         
+        // First check for chains using circular detection (lowest chain)
+        ChainBehaviour chain = FindLowestChainInRange();
+        if (chain != null)
+        {
+            chain.Interact(this);
+            isTransitioningToChain = true;
+            return true;
+        }
+        
+        // Then check for other interactables using directional boxcast (closest)
         Vector2 castDirection = isFacingRight ? Vector2.right : Vector2.left;
         Vector2 castOrigin = (Vector2)transform.position;
         Vector2 boxSize = new Vector2(0.1f, boxCollider.bounds.size.y * 0.8f);
@@ -415,6 +482,9 @@ public class PlayerController : MonoBehaviour
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
+                // Skip chains since we already handled them
+                if (interactable is ChainBehaviour) continue;
+                
                 interactable.Interact(this);
                 return true; // Successfully interacted
             }
@@ -442,6 +512,57 @@ public class PlayerController : MonoBehaviour
         }
         
         return false;
+    }
+    
+    bool IsChainInRange(GameObject chainObj)
+    {
+        if (boxCollider == null || chainObj == null) return false;
+        
+        // Circular detection around player for chains (centered 0.5 units above player)
+        Vector2 castOrigin = (Vector2)transform.position + new Vector2(0f, 0.5f);
+        float detectionRadius = interactionRange;
+        
+        Collider2D[] hits = Physics2D.OverlapCircleAll(castOrigin, detectionRadius, interactableLayer);
+        
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.gameObject == chainObj)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    ChainBehaviour FindLowestChainInRange()
+    {
+        if (boxCollider == null) return null;
+        
+        // Circular detection around player (centered 0.5 units above player)
+        Vector2 castOrigin = (Vector2)transform.position + new Vector2(0f, 0.5f);
+        float detectionRadius = interactionRange;
+        
+        Collider2D[] hits = Physics2D.OverlapCircleAll(castOrigin, detectionRadius, interactableLayer);
+        
+        ChainBehaviour lowestChain = null;
+        float lowestY = float.MaxValue;
+        
+        foreach (Collider2D hit in hits)
+        {
+            ChainBehaviour chain = hit.GetComponent<ChainBehaviour>();
+            if (chain != null)
+            {
+                float chainY = hit.transform.position.y;
+                if (chainY < lowestY)
+                {
+                    lowestY = chainY;
+                    lowestChain = chain;
+                }
+            }
+        }
+        
+        return lowestChain;
     }
 
 
@@ -484,6 +605,13 @@ public class PlayerController : MonoBehaviour
         {
             if (jumpHoldCounter > 0f) return;
             
+            // Release chain if holding one
+            if (grabbedChain != null)
+            {
+                ReleaseChain();
+                return;
+            }
+            
             if (currentlyGrabbing != null)
             {
                 currentlyGrabbing.StopGrab();
@@ -507,6 +635,53 @@ public class PlayerController : MonoBehaviour
     public bool IsFacingRight()
     {
         return isFacingRight;
+    }
+    
+    public float GetHorizontalInput()
+    {
+        return horizontalInput;
+    }
+    
+    public void SetGrabbedChain(ChainBehaviour chain)
+    {
+        grabbedChain = chain;
+    }
+    
+    void JumpOffChain()
+    {
+        if (grabbedChain == null) return;
+        
+        // Get chain momentum and multiply it
+        Vector2 chainVelocity = grabbedChain.GetVelocity() * 2f;
+        
+        // Release chain
+        grabbedChain.StopGrab();
+        grabbedChain = null;
+        isTransitioningToChain = false;
+        
+        // Apply chain momentum + upward jump force
+        rb.linearVelocity = chainVelocity;
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        
+        // Don't allow jump hold amplification
+        jumpHoldCounter = 0f;
+        coyoteTimeCounter = 0f;
+    }
+    
+    void ReleaseChain()
+    {
+        if (grabbedChain == null) return;
+        
+        // Get chain momentum and multiply it
+        Vector2 chainVelocity = grabbedChain.GetVelocity() * 2f;
+        
+        // Release chain
+        grabbedChain.StopGrab();
+        grabbedChain = null;
+        isTransitioningToChain = false;
+        
+        // Transfer momentum to player
+        rb.linearVelocity = chainVelocity;
     }
     
     void UpdateClimbingState()
@@ -608,5 +783,9 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.yellow;
         Vector3 boxCenter = castOrigin + castDirection * (interactionRange * 0.5f);
         Gizmos.DrawWireCube(boxCenter, new Vector3(interactionRange, boxSize.y, 0));
+        
+        // Chain detection circle visualization (centered 0.5 units above player)
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0f, 0.5f, 0f), interactionRange);
     }
 }
