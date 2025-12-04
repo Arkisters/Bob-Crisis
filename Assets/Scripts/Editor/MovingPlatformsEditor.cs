@@ -21,7 +21,7 @@ public class MovingPlatformsEditor : Editor
     void OnEnable()
     {
         MovingPlatforms platform = (MovingPlatforms)target;
-        originalPosition = platform.transform.position;
+        originalPosition = platform.transform.localPosition;
         
         // Migrate old waypoint system to new if needed
         SerializedProperty oldWaypoints = serializedObject.FindProperty("waypoints");
@@ -87,17 +87,34 @@ public class MovingPlatformsEditor : Editor
             {
                 if (index == 0)
                 {
-                    // Snapping waypoint 0 snaps the platform itself
-                    Vector3 platformPos = platform.transform.position;
-                    platformPos.x = Mathf.Round((platformPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
-                    platformPos.y = Mathf.Round((platformPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
-                    // Round to 0.01
-                    platformPos.x = Mathf.Round(platformPos.x * 100f) / 100f;
-                    platformPos.y = Mathf.Round(platformPos.y * 100f) / 100f;
-                    platform.transform.position = platformPos;
-                    
-                    // Update waypoint 0 to match (it's at platform position)
-                    positionProp.vector3Value = platformPos;
+                    // Snapping waypoint 0 snaps the parent (platform stays at local 0,0,0)
+                    if (platform.transform.parent != null)
+                    {
+                        Vector3 parentPos = platform.transform.parent.position;
+                        parentPos.x = Mathf.Round((parentPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
+                        parentPos.y = Mathf.Round((parentPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
+                        // Round to 0.01
+                        parentPos.x = Mathf.Round(parentPos.x * 100f) / 100f;
+                        parentPos.y = Mathf.Round(parentPos.y * 100f) / 100f;
+                        platform.transform.parent.position = parentPos;
+                        
+                        // Update waypoint 0 to match parent position
+                        positionProp.vector3Value = parentPos;
+                    }
+                    else
+                    {
+                        // No parent, snap platform directly
+                        Vector3 platformPos = platform.transform.position;
+                        platformPos.x = Mathf.Round((platformPos.x - PLATFORM_GRID_OFFSET_X) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_X;
+                        platformPos.y = Mathf.Round((platformPos.y - PLATFORM_GRID_OFFSET_Y) / ONE_TILE) * ONE_TILE + PLATFORM_GRID_OFFSET_Y;
+                        // Round to 0.01
+                        platformPos.x = Mathf.Round(platformPos.x * 100f) / 100f;
+                        platformPos.y = Mathf.Round(platformPos.y * 100f) / 100f;
+                        platform.transform.position = platformPos;
+                        
+                        // Update waypoint 0 to match
+                        positionProp.vector3Value = platformPos;
+                    }
                 }
                 else
                 {
@@ -112,8 +129,18 @@ public class MovingPlatformsEditor : Editor
                     // Update preview to show this waypoint
                     if (!Application.isPlaying)
                     {
-                        platform.transform.position = pos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        if (platform.transform.parent != null)
+                        {
+                            // Move parent to waypoint position, keep platform at local 0,0,0
+                            platform.transform.parent.position = pos;
+                            platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                            platform.transform.localPosition = Vector3.zero;
+                        }
+                        else
+                        {
+                            platform.transform.position = pos;
+                            platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        }
                     }
                 }
                 serializedObject.ApplyModifiedProperties();
@@ -146,8 +173,18 @@ public class MovingPlatformsEditor : Editor
                     // Update preview
                     if (!Application.isPlaying)
                     {
-                        platform.transform.position = newAbsolutePos;
-                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        if (platform.transform.parent != null)
+                        {
+                            // Move parent to waypoint position, keep platform at local 0,0,0
+                            platform.transform.parent.position = newAbsolutePos;
+                            platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                            platform.transform.localPosition = Vector3.zero;
+                        }
+                        else
+                        {
+                            platform.transform.position = newAbsolutePos;
+                            platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        }
                     }
                 }
             }
@@ -176,7 +213,14 @@ public class MovingPlatformsEditor : Editor
                 // Update preview
                 if (!Application.isPlaying)
                 {
-                    platform.transform.eulerAngles = new Vector3(0, 0, newRotation);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, newRotation);
+                    }
+                    else
+                    {
+                        platform.transform.eulerAngles = new Vector3(0, 0, newRotation);
+                    }
                 }
             }
             
@@ -198,8 +242,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -213,8 +266,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -228,8 +290,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -243,8 +314,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
             
@@ -264,8 +344,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -279,8 +368,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -294,8 +392,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
             startX += buttonWidth + buttonSpacing;
@@ -309,8 +416,17 @@ public class MovingPlatformsEditor : Editor
                 serializedObject.ApplyModifiedProperties();
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = pos;
-                    platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = pos;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = pos;
+                        platform.transform.eulerAngles = new Vector3(0, 0, rotationProp.floatValue);
+                    }
                 }
             }
         };
@@ -333,10 +449,18 @@ public class MovingPlatformsEditor : Editor
             
             if (index == 0)
             {
-                // First waypoint is at platform's current position
-                newPos.vector3Value = platform.transform.position;
+                // First waypoint is at parent position (or platform position if no parent)
+                if (platform.transform.parent != null)
+                {
+                    newPos.vector3Value = platform.transform.parent.position;
+                    newRotation.floatValue = platform.transform.parent.eulerAngles.z;
+                }
+                else
+                {
+                    newPos.vector3Value = platform.transform.position;
+                    newRotation.floatValue = platform.transform.eulerAngles.z;
+                }
                 newSpeed.floatValue = platform.moveSpeed;
-                newRotation.floatValue = platform.transform.eulerAngles.z;
             }
             else
             {
@@ -384,7 +508,16 @@ public class MovingPlatformsEditor : Editor
             if (GUILayout.Button("Reset to Start Position"))
             {
                 SerializedProperty firstWaypoint = waypointsProperty.GetArrayElementAtIndex(0);
-                platform.transform.position = firstWaypoint.FindPropertyRelative("position").vector3Value;
+                Vector3 startPos = firstWaypoint.FindPropertyRelative("position").vector3Value;
+                if (platform.transform.parent != null)
+                {
+                    platform.transform.parent.position = startPos;
+                    platform.transform.localPosition = Vector3.zero;
+                }
+                else
+                {
+                    platform.transform.position = startPos;
+                }
                 EditorUtility.SetDirty(platform);
             }
         }
@@ -393,7 +526,16 @@ public class MovingPlatformsEditor : Editor
         if (wasEditing && !isEditingWaypoints && !Application.isPlaying && waypointsProperty.arraySize > 0)
         {
             SerializedProperty firstWaypoint = waypointsProperty.GetArrayElementAtIndex(0);
-            platform.transform.position = firstWaypoint.FindPropertyRelative("position").vector3Value;
+            Vector3 startPos = firstWaypoint.FindPropertyRelative("position").vector3Value;
+            if (platform.transform.parent != null)
+            {
+                platform.transform.parent.position = startPos;
+                platform.transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                platform.transform.position = startPos;
+            }
             EditorUtility.SetDirty(platform);
         }
         
@@ -421,8 +563,17 @@ public class MovingPlatformsEditor : Editor
                 // Click on waypoint to move platform there in edit mode
                 if (!Application.isPlaying)
                 {
-                    platform.transform.position = platform.waypointData[i].position;
-                    platform.transform.eulerAngles = new Vector3(0, 0, platform.waypointData[i].rotation);
+                    if (platform.transform.parent != null)
+                    {
+                        platform.transform.parent.position = platform.waypointData[i].position;
+                        platform.transform.parent.eulerAngles = new Vector3(0, 0, platform.waypointData[i].rotation);
+                        platform.transform.localPosition = Vector3.zero;
+                    }
+                    else
+                    {
+                        platform.transform.position = platform.waypointData[i].position;
+                        platform.transform.eulerAngles = new Vector3(0, 0, platform.waypointData[i].rotation);
+                    }
                     EditorUtility.SetDirty(platform);
                 }
             }
