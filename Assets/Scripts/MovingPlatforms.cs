@@ -45,6 +45,7 @@ public class MovingPlatforms : MonoBehaviour
         // Cache the start position immediately (Awake runs even if the object starts disabled).
         if (UseNewSystem)
         {
+            // Waypoints store world space positions, use them directly
             startPosition = waypointData[0].position;
             startRotation = waypointData[0].rotation;
         }
@@ -55,7 +56,12 @@ public class MovingPlatforms : MonoBehaviour
         }
         else
         {
+            // Get actual world position (works correctly with or without parent)
             startPosition = transform.position;
+            if (transform.parent != null)
+            {
+                startPosition = transform.parent.TransformPoint(transform.localPosition);
+            }
             startRotation = transform.eulerAngles.z;
         }
     }
@@ -121,8 +127,9 @@ public class MovingPlatforms : MonoBehaviour
         // Calculate velocity AFTER moving
         platformVelocity = (newPosition - positionBeforeMove) / Time.fixedDeltaTime;
         
-        // Check if reached target waypoint
-        if (Vector3.Distance(rb.position, targetWaypoint.position) < 0.01f)
+        // Check if reached target waypoint (use 2D distance and more lenient threshold)
+        float distanceToTarget = Vector2.Distance(new Vector2(rb.position.x, rb.position.y), new Vector2(targetWaypoint.position.x, targetWaypoint.position.y));
+        if (distanceToTarget < 0.1f)
         {
             // Only snap rotation if there was a rotation change to this waypoint
             WaypointData previousWaypoint = waypointData[currentWaypointIndex];
@@ -178,7 +185,9 @@ public class MovingPlatforms : MonoBehaviour
 
         platformVelocity = (newPosition - positionBeforeMove) / Time.fixedDeltaTime;
         
-        if (Vector3.Distance(rb.position, targetPosition) < 0.01f)
+        // Check if reached target waypoint (use 2D distance and more lenient threshold)
+        float distanceToTarget = Vector2.Distance(new Vector2(rb.position.x, rb.position.y), new Vector2(targetPosition.x, targetPosition.y));
+        if (distanceToTarget < 0.1f)
         {
             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count;
         }
