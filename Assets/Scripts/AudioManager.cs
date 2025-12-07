@@ -12,8 +12,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip Glorp2;
     public AudioClip GlorpFactAmb;
     public AudioClip GlorpOutAmb;
-    public AudioClip BlockGrabFromActiveMagnet;
+    public AudioClip BlokPickup;
     public AudioClip GlorpReggaeton;
+    public AudioClip BlokPutDown;
+    public AudioClip ButtonPress;
+
 
     private void Start()
     {

@@ -197,9 +197,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  constantRotationSpeed: 0
   waypoints:
   - {x: 18.62, y: -5.41, z: 0}
   - {x: 18.62, y: -2.65, z: 0}
+  waypointData: []
 --- !u!212 &8874815
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2312,9 +2314,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
+  constantRotationSpeed: 0
   waypoints:
   - {x: 31, y: 9.686, z: 0}
   - {x: 31, y: 11.28, z: 0}
+  waypointData: []
 --- !u!1 &346829022
 GameObject:
   m_ObjectHideFlags: 0
@@ -3053,6 +3057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMovingInTar: 0
+  rb: {fileID: 0}
 --- !u!4 &463546911 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8446618559052435193, guid: d2274368ab67f8047af85cfd4feb79c1, type: 3}
@@ -3749,9 +3754,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
+  constantRotationSpeed: 0
   waypoints:
   - {x: 33, y: 11.28, z: 0}
   - {x: 33, y: 9.686, z: 0}
+  waypointData: []
 --- !u!1 &560263714 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3176381754255046658, guid: d01250cc5599bf042b86877148f19dc8, type: 3}
@@ -6035,6 +6042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67128931604d4904cbe4661aca2fe84a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  volumeMode: 0
 --- !u!61 &951825355
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6515,7 +6523,7 @@ MonoBehaviour:
   Glorp2: {fileID: 8300000, guid: ee98d56fd1d29844fbf57e10dd7fdce1, type: 3}
   GlorpFactAmb: {fileID: 8300000, guid: f8b74505bd548c642bec6ff9063f1175, type: 3}
   GlorpOutAmb: {fileID: 8300000, guid: f7ac477efb9dcea4587cf12a9109e264, type: 3}
-  BlockGrabFromActiveMagnet: {fileID: 8300000, guid: dbd5ef67d2b572c439482a4f9ed36390, type: 3}
+  BlokPickup: {fileID: 8300000, guid: 1a53588d02551b444b082ffbec947c09, type: 3}
   GlorpReggaeton: {fileID: 8300000, guid: a0daa29a26ee2b849ac7922e4ba74dc8, type: 3}
 --- !u!4 &1063065523
 Transform:
@@ -6558,9 +6566,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
+  constantRotationSpeed: 0
   waypoints:
   - {x: 97.91, y: -1.77, z: 0}
   - {x: 97.91, y: 1, z: 0}
+  waypointData: []
 --- !u!1 &1073595085
 GameObject:
   m_ObjectHideFlags: 0
@@ -7471,6 +7481,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseVolume: {fileID: 1193656397}
   greenVolume: {fileID: 1193656396}
+  volumeMode: 0
 --- !u!114 &1193656396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8127,7 +8138,9 @@ MonoBehaviour:
   objectsToDeactivate: []
   enableGrabbing: 0
   groundClearance: 0.3
-  pickupSpeed: 5
+  holdForce: 250
+  rotationForce: 250
+  maxHoldDistance: 1
   zeroFrictionMaterial: {fileID: 0}
   enableTimedToggle: 0
   activationTimer: 0
@@ -8587,6 +8600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67128931604d4904cbe4661aca2fe84a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  volumeMode: 0
 --- !u!61 &1438635905
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8761,9 +8775,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
+  constantRotationSpeed: 0
   waypoints:
   - {x: 93.8, y: 1.47, z: 0}
   - {x: 88.88, y: 1.47, z: 0}
+  waypointData: []
 --- !u!1 &1453638183
 GameObject:
   m_ObjectHideFlags: 0
@@ -9061,6 +9077,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseVolume: {fileID: 1519971065}
   greenVolume: {fileID: 1519971064}
+  volumeMode: 0
 --- !u!114 &1519971064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29894,9 +29911,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
+  constantRotationSpeed: 0
   waypoints:
   - {x: 144.26, y: -3.3400002, z: 0}
   - {x: 144.26, y: 13.5, z: 0}
+  waypointData: []
 --- !u!1 &1612860904
 GameObject:
   m_ObjectHideFlags: 0
@@ -30408,9 +30427,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
+  constantRotationSpeed: 0
   waypoints:
   - {x: 94.15, y: -1.77, z: 0}
   - {x: 96.19, y: -1.77, z: 0}
+  waypointData: []
 --- !u!1001 &1769032084
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30550,9 +30571,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
+  constantRotationSpeed: 0
   waypoints:
   - {x: 89.89, y: 7.46, z: 0}
   - {x: 94.19, y: 7.46, z: 0}
+  waypointData: []
 --- !u!1 &1790895962 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
@@ -31173,9 +31196,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
+  constantRotationSpeed: 0
   waypoints:
   - {x: 29, y: 11.28, z: 0}
   - {x: 29, y: 9.686, z: 0}
+  waypointData: []
 --- !u!1 &1983044995
 GameObject:
   m_ObjectHideFlags: 0
