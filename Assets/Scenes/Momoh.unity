@@ -201,7 +201,13 @@ MonoBehaviour:
   waypoints:
   - {x: 18.62, y: -5.41, z: 0}
   - {x: 18.62, y: -2.65, z: 0}
-  waypointData: []
+  waypointData:
+  - position: {x: 18.62, y: -5.41, z: 0}
+    speed: 10
+    rotation: 0
+  - position: {x: 18.62, y: -2.65, z: 0}
+    speed: 10
+    rotation: 0
 --- !u!212 &8874815
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2349,7 +2355,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2726,12 +2732,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e4b3d959052d54da2b836983b8e4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 367079145}
---- !u!50 &367079145 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 8520398860470558638, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
-  m_PrefabInstance: {fileID: 1882059229}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &389537644 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
@@ -6525,6 +6525,17 @@ MonoBehaviour:
   GlorpOutAmb: {fileID: 8300000, guid: f7ac477efb9dcea4587cf12a9109e264, type: 3}
   BlokPickup: {fileID: 8300000, guid: 1a53588d02551b444b082ffbec947c09, type: 3}
   GlorpReggaeton: {fileID: 8300000, guid: a0daa29a26ee2b849ac7922e4ba74dc8, type: 3}
+  BlokPutDown: {fileID: 8300000, guid: 735ee9b2c140dd741a1413828eb1e25e, type: 3}
+  ButtonPress: {fileID: 8300000, guid: ef2cd1d15d0c5904f842cffcf63d92f1, type: 3}
+  Footstep1: {fileID: 8300000, guid: 4b67fa5ef09445340966569919819f77, type: 3}
+  Footstep2: {fileID: 8300000, guid: fd859b088938cc048b4e6d97ac648478, type: 3}
+  Footstep3: {fileID: 8300000, guid: c4e11fa2f3b005e458647fa7eb56e8b3, type: 3}
+  Footstep4: {fileID: 8300000, guid: a875d51894a833e4bab55b1ae1f0019b, type: 3}
+  FactoryExplosion: {fileID: 8300000, guid: 0934dac129ff8ba4daecc370e5422310, type: 3}
+  PistonActivate: {fileID: 8300000, guid: a26081cbabd9f034ab47e5f921bab2c5, type: 3}
+  SawBlade: {fileID: 8300000, guid: f278b35e2172e46469e63ab1c37ba5ca, type: 3}
+  TarSludge: {fileID: 8300000, guid: 370098fe48923824c8e8fab3fa46c0bd, type: 3}
+  FireBlazing: {fileID: 8300000, guid: e66ccee8e4928ed4f85141f7f7c4463d, type: 3}
 --- !u!4 &1063065523
 Transform:
   m_ObjectHideFlags: 0
@@ -30777,11 +30788,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.62
+      value: 101.19
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.31
+      value: -2.09
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.z

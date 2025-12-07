@@ -16,6 +16,15 @@ public class AudioManager : MonoBehaviour
     public AudioClip GlorpReggaeton;
     public AudioClip BlokPutDown;
     public AudioClip ButtonPress;
+    public AudioClip Footstep1;
+    public AudioClip Footstep2;
+    public AudioClip Footstep3;
+    public AudioClip Footstep4;
+    public AudioClip FactoryExplosion;
+    public AudioClip PistonActivate;
+    public AudioClip SawBlade;
+    public AudioClip TarSludge;
+    public AudioClip FireBlazing;
 
 
     private void Start()
