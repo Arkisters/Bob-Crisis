@@ -38,6 +38,7 @@ public class Health : MonoBehaviour
     public void Updatecheckpoint(Vector2 pos)
     {
         checkpointPos = pos;
+        health = maxHealth;
     }
 
     void Die()
