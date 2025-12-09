@@ -9,7 +9,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("-----Audio Clips-----")]
     public AudioClip GlorpMain;
-    public AudioClip Glorp2;
+    public AudioClip Glorp6;
     public AudioClip GlorpFactAmb;
     public AudioClip GlorpOutAmb;
     public AudioClip BlokPickup;
@@ -26,7 +26,6 @@ public class AudioManager : MonoBehaviour
     public AudioClip TarSludge;
     public AudioClip FireBlazing;
 
-
     private void Start()
     {
         ambienceSource.clip = GlorpOutAmb;
@@ -39,5 +38,9 @@ public class AudioManager : MonoBehaviour
     {
         SFXSource.PlayOneShot(clip);
     }
+
+    // So other scripts can access the audio sources if needed
+    public AudioSource GetAmbienceSource() => ambienceSource;
+    public AudioSource GetMusicSource() => musicSource;
 
 }

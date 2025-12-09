@@ -2355,7 +2355,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -6392,7 +6392,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 988502097}
-  - component: {fileID: 988502096}
   m_Layer: 0
   m_Name: OutsideSound
   m_TagString: Untagged
@@ -6400,20 +6399,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &988502096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 988502095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddd20ccb3ba44d64eb775648539f942f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Area: {fileID: 0}
-  Player: {fileID: 0}
 --- !u!4 &988502097
 Transform:
   m_ObjectHideFlags: 0
@@ -6656,7 +6641,7 @@ MonoBehaviour:
   SFXSource: {fileID: 826459662}
   ambienceSource: {fileID: 1511169541}
   GlorpMain: {fileID: 8300000, guid: 661d6f9640335bf4eaa98a9d6502d56e, type: 3}
-  Glorp2: {fileID: 8300000, guid: ee98d56fd1d29844fbf57e10dd7fdce1, type: 3}
+  Glorp6: {fileID: 8300000, guid: 725463e015fa426438245935cfc13ab8, type: 3}
   GlorpFactAmb: {fileID: 8300000, guid: f8b74505bd548c642bec6ff9063f1175, type: 3}
   GlorpOutAmb: {fileID: 8300000, guid: f7ac477efb9dcea4587cf12a9109e264, type: 3}
   BlokPickup: {fileID: 8300000, guid: 1a53588d02551b444b082ffbec947c09, type: 3}
@@ -9104,7 +9089,7 @@ AudioSource:
   m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
-  Mute: 1
+  Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -30924,7 +30909,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 108.58
+      value: 11.49
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -31283,6 +31268,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1950502093}
   - component: {fileID: 1950502092}
+  - component: {fileID: 1950502094}
   m_Layer: 0
   m_Name: FactoryArea
   m_TagString: Untagged
@@ -31307,7 +31293,7 @@ BoxCollider2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_LayerOverridePriority: 0
+  m_LayerOverridePriority: 1
   m_ForceSendLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -31351,6 +31337,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1950502094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950502091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a9c0e1e9ea8acf4b8e53bf794460551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ambience: {fileID: 8300000, guid: f8b74505bd548c642bec6ff9063f1175, type: 3}
+  music: {fileID: 8300000, guid: 725463e015fa426438245935cfc13ab8, type: 3}
 --- !u!1 &1954969472 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8625259784392704168, guid: 17bf675ad362d4b42bb77b64fc2c88b2, type: 3}
