@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class InteractableEffects : MonoBehaviour, IInteractable
 {
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
     [Header("Color Change")]
     public bool enableColorChange = false;
     public Color targetColor = Color.green;
@@ -48,6 +53,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     [Header("Animate and Kill")]
     public bool enableAnimateAndKill = false;
     public GameObject objectToAnimate;
+    [Range(0f, 1f)] public float explosionVolume = 1f;
 
     void Start()
     {
@@ -232,6 +238,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (!enableGrabbing || isBeingGrabbed || objectRigidbody == null) return false;
         
         isBeingGrabbed = true;
+        audioManager.PlaySFX(audioManager.BlokPickup);
         grabbingPlayer = player;
         
         // Store original material and apply zero friction material
@@ -257,7 +264,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         
         return true;
     }
-    
+
     Vector3 GetTargetHoldPosition()
     {
         if (grabbingPlayer == null) return transform.position;
@@ -306,6 +313,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (!enableGrabbing || !isBeingGrabbed) return;
         
         isBeingGrabbed = false;
+        audioManager.PlaySFX(audioManager.BlokPutDown);
         grabbingPlayer = null;
         
         // Restore original physics material
@@ -336,6 +344,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (enableMovement) ToggleMove();
         if (enableObjectActivation) ActivateObjects();
         if (enableTimedToggle) TimedToggle();
+        audioManager.PlaySFX(audioManager.ButtonPress);
         if (enableAnimateAndKill) AnimateAndKill();
 
         if (enableGrabbing) 
@@ -365,6 +374,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (!enableAnimateAndKill || objectToAnimate != null)
         {
             Animator animator = objectToAnimate.GetComponent<Animator>();
+            AudioSource.PlayClipAtPoint(audioManager.FactoryExplosion, transform.position, explosionVolume);
             animator.SetBool("explode", true);
             Destroy(gameObject, 1f); // Adjust delay as needed to match animation length
         }
