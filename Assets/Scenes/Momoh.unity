@@ -8586,7 +8586,7 @@ MonoBehaviour:
   timedObjectsToToggle: {fileID: 0}
   enableAnimateAndKill: 1
   objectToAnimate: {fileID: 1349563692}
-  explosionVolume: 10
+  explosionVolume: 3
 --- !u!50 &1349563695
 Rigidbody2D:
   serializedVersion: 5
