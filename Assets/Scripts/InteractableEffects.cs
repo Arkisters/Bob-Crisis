@@ -53,6 +53,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     [Header("Animate and Kill")]
     public bool enableAnimateAndKill = false;
     public GameObject objectToAnimate;
+    [Range(0f, 1f)] public float explosionVolume = 1f;
 
     void Start()
     {
@@ -263,7 +264,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         
         return true;
     }
-    
+
     Vector3 GetTargetHoldPosition()
     {
         if (grabbingPlayer == null) return transform.position;
@@ -373,6 +374,7 @@ public class InteractableEffects : MonoBehaviour, IInteractable
         if (!enableAnimateAndKill || objectToAnimate != null)
         {
             Animator animator = objectToAnimate.GetComponent<Animator>();
+            AudioSource.PlayClipAtPoint(audioManager.FactoryExplosion, transform.position, explosionVolume);
             animator.SetBool("explode", true);
             Destroy(gameObject, 1f); // Adjust delay as needed to match animation length
         }
