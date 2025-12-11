@@ -6,7 +6,15 @@ public class InteractableEffects : MonoBehaviour, IInteractable
     AudioManager audioManager;
     private void Awake()
     {
-        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        GameObject audioManagerObject = GameObject.FindGameObjectWithTag("Audio");
+        if (audioManagerObject != null)
+        {
+            audioManager = audioManagerObject.GetComponent<AudioManager>();
+        }
+        else
+        {
+            Debug.LogWarning("AudioManager object with tag 'Audio' not found in the scene.");
+        }
     }
     [Header("Color Change")]
     public bool enableColorChange = false;

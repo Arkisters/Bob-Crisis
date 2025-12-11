@@ -11,6 +11,8 @@ TagManager:
   - Crusher
   - Magnet
   - Audio
+  - Tar
+  - MagnetWall
   layers:
   - Default
   - TransparentFX
@@ -23,7 +25,7 @@ TagManager:
   - Props
   - Interactable
   - No Post Processing
-  - 
+  - VignetteOnly
   - 
   - 
   - 

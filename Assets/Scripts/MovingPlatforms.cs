@@ -23,6 +23,7 @@ public class MovingPlatforms : MonoBehaviour
     public List<Vector3> waypoints = new List<Vector3>(); // Old waypoint system
     public List<WaypointData> waypointData = new List<WaypointData>(); // New waypoint system
     
+    private Rigidbody2D rb;
     private int currentWaypointIndex;
     private Vector3 platformVelocity;
     private Vector3 startPosition;
@@ -35,9 +36,16 @@ public class MovingPlatforms : MonoBehaviour
 
     void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogError("MovingPlatforms requires a Rigidbody2D component!");
+        }
+        
         // Cache the start position immediately (Awake runs even if the object starts disabled).
         if (UseNewSystem)
         {
+            // Waypoints store world space positions, use them directly
             startPosition = waypointData[0].position;
             startRotation = waypointData[0].rotation;
         }
@@ -48,7 +56,12 @@ public class MovingPlatforms : MonoBehaviour
         }
         else
         {
+            // Get actual world position (works correctly with or without parent)
             startPosition = transform.position;
+            if (transform.parent != null)
+            {
+                startPosition = transform.parent.TransformPoint(transform.localPosition);
+            }
             startRotation = transform.eulerAngles.z;
         }
     }
@@ -56,8 +69,11 @@ public class MovingPlatforms : MonoBehaviour
     void OnEnable()
     {
         // Reset platform state every time the object is enabled.
-        transform.position = startPosition;
-        transform.eulerAngles = new Vector3(0, 0, startRotation);
+        if (rb != null)
+        {
+            rb.MovePosition(startPosition);
+            rb.MoveRotation(startRotation);
+        }
         currentWaypointIndex = 0;
         platformVelocity = Vector3.zero;
         currentSpeed = UseNewSystem ? waypointData[0].speed : moveSpeed;
@@ -80,56 +96,51 @@ public class MovingPlatforms : MonoBehaviour
         }
         
         // Apply constant rotation if set
-        if (constantRotationSpeed != 0f)
+        if (constantRotationSpeed != 0f && rb != null)
         {
-            transform.Rotate(Vector3.forward, constantRotationSpeed * Time.fixedDeltaTime);
+            rb.MoveRotation(rb.rotation + constantRotationSpeed * Time.fixedDeltaTime);
         }
     }
     
     void UpdateWithNewSystem()
     {
-        if (waypointData == null || waypointData.Count == 0) return;
+        if (waypointData == null || waypointData.Count == 0 || rb == null) return;
         
         // Store position before moving
-        Vector3 positionBeforeMove = transform.position;
+        Vector3 positionBeforeMove = rb.position;
         
         // Get target waypoint (the one we're moving TO)
         int targetIndex = (currentWaypointIndex + 1) % waypointData.Count;
         WaypointData targetWaypoint = waypointData[targetIndex];
-        Vector3 targetPosition = targetWaypoint.position;
-        // Use the speed defined on the target waypoint (speed TO that waypoint)
         float targetSpeed = targetWaypoint.speed > 0 ? targetWaypoint.speed : moveSpeed;
         
-        // Move platform toward target waypoint
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, targetSpeed * Time.fixedDeltaTime);
+        // Move platform toward target waypoint using Rigidbody2D
+        Vector3 newPosition = Vector3.MoveTowards(rb.position, targetWaypoint.position, targetSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(newPosition);
 
         // Apply calculated rotation (independent of constant rotation)
         if (currentRotationSpeed != 0f)
         {
-            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.fixedDeltaTime);
+            rb.MoveRotation(rb.rotation + currentRotationSpeed * Time.fixedDeltaTime);
         }
 
         // Calculate velocity AFTER moving
-        platformVelocity = (transform.position - positionBeforeMove) / Time.fixedDeltaTime;
+        platformVelocity = (newPosition - positionBeforeMove) / Time.fixedDeltaTime;
         
-        // Check if reached target waypoint
-        if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
+        // Check if reached target waypoint (use 2D distance and more lenient threshold)
+        float distanceToTarget = Vector2.Distance(new Vector2(rb.position.x, rb.position.y), new Vector2(targetWaypoint.position.x, targetWaypoint.position.y));
+        if (distanceToTarget < 0.1f)
         {
             // Only snap rotation if there was a rotation change to this waypoint
-            // Check if the previous and current waypoint have different rotations
             WaypointData previousWaypoint = waypointData[currentWaypointIndex];
             float rotationDiff = Mathf.DeltaAngle(previousWaypoint.rotation, targetWaypoint.rotation);
             if (Mathf.Abs(rotationDiff) > 0.01f)
             {
-                // There was a rotation change, snap to exact target
-                transform.eulerAngles = new Vector3(0, 0, targetWaypoint.rotation);
+                rb.MoveRotation(targetWaypoint.rotation);
             }
-            // Otherwise, don't snap - let constant rotation continue freely
             
             // Move to next waypoint
             currentWaypointIndex = targetIndex;
-            
-            // Calculate rotation speed for next segment
             CalculateRotationSpeed();
         }
     }
@@ -138,33 +149,24 @@ public class MovingPlatforms : MonoBehaviour
     {
         if (waypointData == null || waypointData.Count == 0) return;
         
-        // Get current waypoint (where we are) and next waypoint (where we're going TO)
         int nextIndex = (currentWaypointIndex + 1) % waypointData.Count;
         WaypointData currentWaypoint = waypointData[currentWaypointIndex];
         WaypointData nextWaypoint = waypointData[nextIndex];
         
-        // Check if rotation will change at the next waypoint
         float rotationDifference = Mathf.DeltaAngle(currentWaypoint.rotation, nextWaypoint.rotation);
         
-        // Only rotate if the next waypoint has a different rotation than current
         if (Mathf.Abs(rotationDifference) < 0.01f)
         {
             currentRotationSpeed = 0f;
             return;
         }
         
-        // Calculate distance from current waypoint to next waypoint
         float distance = Vector3.Distance(currentWaypoint.position, nextWaypoint.position);
-        
-        // Use the speed defined on the next waypoint (speed TO that waypoint)
         float targetSpeed = nextWaypoint.speed > 0 ? nextWaypoint.speed : moveSpeed;
         
-        // Calculate time to reach next waypoint: time = distance / speed
         if (distance > 0.01f && targetSpeed > 0)
         {
-            float timeToReach = distance / targetSpeed;
-            // Calculate rotation speed: degrees per second = total rotation / time
-            currentRotationSpeed = rotationDifference / timeToReach;
+            currentRotationSpeed = rotationDifference / (distance / targetSpeed);
         }
         else
         {
@@ -174,24 +176,20 @@ public class MovingPlatforms : MonoBehaviour
     
     void UpdateWithOldSystem()
     {
-        // Store position before moving
-        Vector3 positionBeforeMove = transform.position;
+        if (rb == null) return;
         
-        // Move platform toward current waypoint
+        Vector3 positionBeforeMove = rb.position;
         Vector3 targetPosition = waypoints[currentWaypointIndex];
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
+        Vector3 newPosition = Vector3.MoveTowards(rb.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(newPosition);
 
-        // Calculate velocity AFTER moving
-        platformVelocity = (transform.position - positionBeforeMove) / Time.fixedDeltaTime;
+        platformVelocity = (newPosition - positionBeforeMove) / Time.fixedDeltaTime;
         
-        // Check if reached current waypoint
-        if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
+        // Check if reached target waypoint (use 2D distance and more lenient threshold)
+        float distanceToTarget = Vector2.Distance(new Vector2(rb.position.x, rb.position.y), new Vector2(targetPosition.x, targetPosition.y));
+        if (distanceToTarget < 0.1f)
         {
-            currentWaypointIndex++;
-            if (currentWaypointIndex >= waypoints.Count)
-            {
-                currentWaypointIndex = 0;
-            }
+            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count;
         }
     }
     
