@@ -29,29 +29,44 @@ public class AreaAmbienceTrigger : MonoBehaviour
                 audioManager.StopAllSFX();
             }
 
-            // If an ambience clip is assigned, switch to it
-            if (ambience != null)
+            // If an ambience clip is assigned, switch to it; otherwise stop ambience
+            if (audioManager != null)
             {
-                audioManager.GetAmbienceSource().clip = ambience;
-                audioManager.GetAmbienceSource().Play();
-            }
+                var ambSource = audioManager.GetAmbienceSource();
+                if (ambience != null)
+                {
+                    ambSource.clip = ambience;
+                    ambSource.Play();
+                }
+                else if (ambSource != null)
+                {
+                    ambSource.Stop();
+                    ambSource.clip = null;
+                }
 
-            // If a music clip is assigned, switch to it
-            if (music != null)
-            {
-                audioManager.GetMusicSource().clip = music;
-                audioManager.GetMusicSource().Play();
+                // If a music clip is assigned, switch to it; otherwise stop music
+                var musicSource = audioManager.GetMusicSource();
+                if (music != null)
+                {
+                    musicSource.clip = music;
+                    musicSource.Play();
+                }
+                else if (musicSource != null)
+                {
+                    musicSource.Stop();
+                    musicSource.clip = null;
+                }
             }
 
             // Play single SFX
-            if (SFX != null)
+            if (SFX != null && audioManager != null)
             {
                 Debug.Log($"[AreaAmbienceTrigger] '{gameObject.name}' playing single SFX: '{SFX.name}' with volume {sfxVolume}");
                 audioManager.PlaySFX(SFX, sfxVolume);
             }
 
             // Play multiple overlapping SFX
-            if (SFXMultiple != null && SFXMultiple.Length > 0)
+            if (SFXMultiple != null && SFXMultiple.Length > 0 && audioManager != null)
             {
                 string names = "";
                 foreach (var c in SFXMultiple)
