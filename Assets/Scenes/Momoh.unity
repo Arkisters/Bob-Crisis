@@ -2387,7 +2387,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -6853,7 +6853,7 @@ MonoBehaviour:
   ambienceSource: {fileID: 1511169541}
   GlorpMain: {fileID: 8300000, guid: 661d6f9640335bf4eaa98a9d6502d56e, type: 3}
   Glorp6: {fileID: 8300000, guid: 725463e015fa426438245935cfc13ab8, type: 3}
-  GlorpFactAmb: {fileID: 8300000, guid: f8b74505bd548c642bec6ff9063f1175, type: 3}
+  GlorpFactAmb: {fileID: 8300000, guid: e7d1d5178abf14f40aa65a640249c6d0, type: 3}
   GlorpOutAmb: {fileID: 8300000, guid: f7ac477efb9dcea4587cf12a9109e264, type: 3}
   BlokPickup: {fileID: 8300000, guid: 1a53588d02551b444b082ffbec947c09, type: 3}
   GlorpReggaeton: {fileID: 8300000, guid: a0daa29a26ee2b849ac7922e4ba74dc8, type: 3}
@@ -8586,7 +8586,7 @@ MonoBehaviour:
   timedObjectsToToggle: {fileID: 0}
   enableAnimateAndKill: 1
   objectToAnimate: {fileID: 1349563692}
-  explosionVolume: 3
+  explosionVolume: 1
 --- !u!50 &1349563695
 Rigidbody2D:
   serializedVersion: 5
@@ -9490,7 +9490,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -31443,11 +31443,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 34.01
+      value: 108.87
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.89
+      value: 0.69
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -31888,7 +31888,7 @@ MonoBehaviour:
   SFX: {fileID: 0}
   SFXMultiple:
   - {fileID: 8300000, guid: f278b35e2172e46469e63ab1c37ba5ca, type: 3}
-  sfxVolume: 0.1
+  sfxVolume: 0.15
 --- !u!1 &1954969472 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8625259784392704168, guid: 17bf675ad362d4b42bb77b64fc2c88b2, type: 3}
