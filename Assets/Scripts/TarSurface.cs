@@ -9,7 +9,7 @@ public class TarSurface : MonoBehaviour
     public void OnTriggerStay2D(Collider2D collision)
     {
 
-        if (collision.CompareTag("Tar"))
+        if (collision.CompareTag("Tar")) 
         {
             //change variable in the player controller to true
             isMovingInTar = true;
