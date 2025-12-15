@@ -995,6 +995,10 @@ PrefabInstance:
       value: impenetrableWall
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -2735,6 +2739,10 @@ PrefabInstance:
       value: impenetrableWall
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -3752,6 +3760,10 @@ PrefabInstance:
       value: impenetrableWall
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -3838,6 +3850,10 @@ PrefabInstance:
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_Name
       value: impenetrableWall
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_IsActive
@@ -28906,6 +28922,10 @@ PrefabInstance:
       value: magnetWall (1)
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_TagString
       value: MagnetWall
       objectReference: {fileID: 0}
@@ -30377,6 +30397,10 @@ PrefabInstance:
       value: impenetrableWall
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -30783,6 +30807,10 @@ PrefabInstance:
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_Name
       value: magnetWall
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_TagString
@@ -31479,6 +31507,10 @@ PrefabInstance:
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_Name
       value: impenetrableWall
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_IsActive
@@ -40910,6 +40942,10 @@ PrefabInstance:
       value: magnetWall (2)
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_TagString
       value: MagnetWall
       objectReference: {fileID: 0}
@@ -42336,7 +42372,7 @@ GameObject:
   - component: {fileID: 1362125242}
   - component: {fileID: 1362125241}
   - component: {fileID: 1362125244}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: magnetToggle
   m_TagString: Magnet
   m_Icon: {fileID: 0}
@@ -42638,6 +42674,10 @@ PrefabInstance:
       value: magnetWall (1)
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_TagString
       value: MagnetWall
       objectReference: {fileID: 0}
@@ -42731,6 +42771,10 @@ PrefabInstance:
     - target: {fileID: 6232610879316124709, guid: 9837f4a559197024f8f71f007e33e9d0, type: 3}
       propertyPath: m_Name
       value: magnet1_2 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232610879316124709, guid: 9837f4a559197024f8f71f007e33e9d0, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7365748426938777757, guid: 9837f4a559197024f8f71f007e33e9d0, type: 3}
       propertyPath: m_LocalScale.x
@@ -44175,6 +44219,10 @@ PrefabInstance:
       value: magnetWall (2)
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_TagString
       value: MagnetWall
       objectReference: {fileID: 0}
@@ -44781,6 +44829,10 @@ PrefabInstance:
     - target: {fileID: 6232610879316124709, guid: 9837f4a559197024f8f71f007e33e9d0, type: 3}
       propertyPath: m_Name
       value: magnet1_2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232610879316124709, guid: 9837f4a559197024f8f71f007e33e9d0, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7365748426938777757, guid: 9837f4a559197024f8f71f007e33e9d0, type: 3}
       propertyPath: m_LocalScale.x
@@ -45497,11 +45549,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.6
+      value: -6.73
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.51
+      value: -1.31
       objectReference: {fileID: 0}
     - target: {fileID: 4169732480191601182, guid: fa04e729691d9d0408d004c03ed8ea8a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -48048,6 +48100,10 @@ PrefabInstance:
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_Name
       value: magnetWall
+      objectReference: {fileID: 0}
+    - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 538190077781961504, guid: 46ef415bff5b84b439a19c11858a1cf8, type: 3}
       propertyPath: m_TagString
